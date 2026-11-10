@@ -1,1099 +1,1092 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bowye Mars 3000</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bowye Mars 3000</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="background-stars">
-        <div class="star s1">✦</div>
-        <div class="star s2">✦</div>
-        <div class="star s3">✦</div>
-        <div class="star s4">✦</div>
-    </div>
-
-    <main>
-        <section id="screen-menu" class="screen active">
-            <div class="menu-container">
-                <div class="menu-left">
-                    <header class="menu-header">
-                        <span class="star-decor-left">✦</span>
-                        <h1 class="title-beyond">Bowye</h1>
-                        <span class="star-decor-right">✦</span>
-                        <h2 class="title-time">MARS</h2>
-                    </header>
-
-                    <form id="player-form" class="player-form">
-                        <label for="nomeJogador">nome do tripulante</label>
-                        <input id="nomeJogador" name="nomeJogador" type="text" maxlength="18" placeholder="VIAJANTE" autocomplete="off">
-                        <button type="submit" class="menu-link play-button">- iniciar missão -</button>
-                    </form>
-                </div>
-
-                <div class="menu-right">
-                    <div class="hourglass">
-                        <div class="hourglass-top"></div>
-                        <div class="hourglass-bottom"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="screen-game" class="screen">
-            <header class="hud-top">
-                <button type="button" class="menu-link" id="btn-abortar" style="font-size: 0.9rem;">← abortar</button>
-                <div id="checklist-visual">Checklist: ⚪ ⚪ ⚪ ⚪ ⚪</div>
-                <button type="button" id="btn-abrir-livro" class="menu-link" style="font-size: 1rem; color: var(--cor-laranja);">
-                    📖 Livro Guia
-                </button>
-            </header>
-
-            <div class="game-world" id="game-world">
-                <div class="astronaut-sprite" id="player-sprite">👨‍🚀</div>
-            </div>
-
-            <div class="interact-prompt" id="interact-prompt" role="status" aria-live="polite"></div>
-
-            <div class="modal-overlay" id="modal-livro">
-                <div class="modal-box">
-                    <h2>📖 Guia de Sobrevivência</h2>
-                    <p style="margin-bottom: 15px; color: var(--cor-marrom-cinza);">
-                        Este livro pertence a: <strong id="book-owner-name" style="color: var(--cor-texto-claro);">VIAJANTE</strong>
-                    </p>
-                    <div id="lista-paginas-livro"></div>
-                    <button type="button" id="btn-fechar-livro" class="menu-link" style="margin-top: 20px; width: 100%;">
-                        [ fechar livro e explorar ]
-                    </button>
-                </div>
-            </div>
-
-            <div class="modal-overlay" id="modal-quiz">
-                <div class="modal-box">
-                    <h3 id="quiz-item-title">Objeto</h3>
-                    <p id="quiz-question-text" style="margin-bottom: 12px; color: var(--cor-laranja);"></p>
-                    <div class="quiz-options" id="quiz-options-container"></div>
-                    <p id="feedback-msg"></p>
-                    <button type="button" id="btn-confirmar-coleta" class="menu-link" style="margin-top: 15px; width: 100%;">
-                        [ confirmar resposta ]
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <section id="screen-ship" class="screen">
-            <div class="ship-layout">
-                <header class="phase-heading">
-                    <span>FASE 2 · PREPARAÇÃO</span>
-                    <h1>Decolagem</h1>
-                    <p>Prepare os sistemas e coloque a nave em órbita.</p>
-                </header>
-
-                <section class="ship-panel" id="ship-cables">
-                    <div class="ship-panel-heading">
-                        <div>
-                            <span class="mission-number">MISSÃO 1</span>
-                            <h2>Conectar cabos</h2>
-                        </div>
-                        <strong id="cable-timer" class="mission-timer">20s</strong>
-                    </div>
-                    <p id="cable-status" class="mission-status" aria-live="polite">Selecione um símbolo à esquerda e encontre o mesmo símbolo à direita.</p>
-                    <div class="cable-board">
-                        <div class="cable-side">
-                            <h3>1. CABOS</h3>
-                            <div id="cable-list" class="cable-column" aria-label="Cabos"></div>
-                        </div>
-                        <div class="cable-board-bridge" aria-hidden="true">⟷</div>
-                        <div class="cable-side">
-                            <h3>2. CONECTORES</h3>
-                            <div id="connector-list" class="cable-column" aria-label="Conectores"></div>
-                        </div>
-                    </div>
-                    <p class="mission-hint">Duas conexões erradas encerram a missão.</p>
-                </section>
-
-                <section class="ship-panel" id="ship-sequence" hidden>
-                    <div class="ship-panel-heading">
-                        <div>
-                            <span class="mission-number">MISSÃO 2</span>
-                            <h2>Sequência de ignição</h2>
-                        </div>
-                        <strong id="sequence-timer" class="mission-timer">8s</strong>
-                    </div>
-                    <p class="mission-status">Repita a sequência usando as teclas do teclado.</p>
-                    <div id="sequence-keys" class="sequence-keys" aria-label="Sequência de ignição"></div>
-                    <p id="sequence-status" class="mission-status" aria-live="polite">Aguardando sequência...</p>
-                    <p class="mission-hint">Você tem 8 segundos. Uma tecla errada falha a ignição.</p>
-                </section>
-
-                <section id="ship-result" class="ship-result" aria-live="polite" hidden>
-                    <div class="result-icon" id="ship-result-icon">🚀</div>
-                    <h2 id="ship-result-title"></h2>
-                    <p id="ship-result-message"></p>
-                    <div class="result-actions">
-                        <button type="button" class="menu-link" id="btn-retry-launch">[ tentar decolagem novamente ]</button>
-                        <button type="button" class="menu-link play-button" id="btn-land-mars" hidden>[ pousar em Marte ]</button>
-                    </div>
-                </section>
-            </div>
-        </section>
-
-        <section id="screen-mars" class="screen mars-screen">
-            <header class="hud-top mars-hud">
-                <div><strong>MARTE</strong><span id="mars-objectives">Investigue 3 pontos no planeta.</span></div>
-                <div id="mars-inventory" class="mars-inventory" aria-label="Itens da missão"></div>
-            </header>
-            <div class="mars-world" id="mars-world">
-                <span class="mars-rock rock-one" aria-hidden="true">◆</span>
-                <span class="mars-rock rock-two" aria-hidden="true">▲</span>
-                <span class="mars-rock rock-three" aria-hidden="true">◆</span>
-                <span class="mars-rock rock-four" aria-hidden="true">▲</span>
-                <span class="mars-rock rock-five" aria-hidden="true">◆</span>
-                <div class="astronaut-sprite mars-astronaut" id="mars-player-sprite">👨‍🚀</div>
-            </div>
-            <div class="mars-feedback" id="mars-feedback" role="status" aria-live="polite">Uma nova paisagem se estende diante de você.</div>
-            <div class="interact-prompt mars-prompt" id="mars-prompt" role="status" aria-live="polite"></div>
-        </section>
-
-        <section id="screen-win" class="screen">
-            <div class="menu-container win-container">
-                <div class="win-panel">
-                    <div class="win-badge">✦ missão concluída ✦</div>
-                    <div class="win-tag">Tripulante</div>
-                    <h1 id="win-name" class="win-name">VIAJANTE</h1>
-                    <p class="win-summary">O encontro com ZibZab foi registrado. Estes são os selos da sua expedição.</p>
-                    <h2 class="album-title">Álbum da expedição</h2>
-                    <div id="seal-album" class="seal-album"></div>
-                    <h2 class="album-title equipment-title">Equipamentos da missão</h2>
-                    <ul id="win-items" class="win-items"></ul>
-                    <div class="win-actions">
-                        <button type="button" id="btn-nova-missao" class="menu-link play-button">- nova missão -</button>
-                        <a href="#menu" class="menu-link">- voltar ao início -</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        const todosItens = [
-            {
-                id: 'comida', nome: 'Comida de Astronauta', icon: '🍕',
-                livro: 'As porções são desidratadas e embaladas para permanecer próprias para consumo durante a viagem de cerca de sete meses. Antes de comer, a tripulação reidrata cada porção com água medida; manter a embalagem fechada evita contaminação e desperdício.',
-                q: 'A viagem está na metade e uma refeição será preparada dentro da nave. Qual procedimento conserva o estoque e mantém a comida própria para consumo?',
-                respostas: [
-                    { texto: 'Abrir todas as porções de uma vez e deixá-las expostas para a tripulação escolher depois.', correta: false },
-                    { texto: 'Reidratar apenas a porção da refeição com a quantidade de água indicada e manter as outras embalagens fechadas.', correta: true },
-                    { texto: 'Usar a água do reservatório para lavar as embalagens e comer o alimento ainda desidratado.', correta: false }
-                ]
-            },
-            {
-                id: 'mapa', nome: 'Mapa Marciano', icon: '🗺️',
-                livro: 'O mapa marca crateras, campos de rochas e trechos de solo firme. Ele também registra pontos de referência que continuam visíveis quando a poeira reduz a visibilidade; comparar esses marcos ajuda a escolher uma rota segura.',
-                q: 'Uma tempestade cobre parte do horizonte e o caminho direto atravessa uma área de rochas. Como a equipe deve usar o mapa para continuar a exploração?',
-                respostas: [
-                    { texto: 'Comparar os pontos de referência registrados e escolher um desvio por solo firme, evitando a área de rochas.', correta: true },
-                    { texto: 'Seguir em linha reta pela área de rochas, usando o rádio para confirmar a posição a cada passo.', correta: false },
-                    { texto: 'Guardar o mapa até a tempestade passar, pois ele só serve para marcar a posição da nave.', correta: false }
-                ]
-            },
-            {
-                id: 'mp3', nome: 'MP3 Player', icon: '🎧',
-                livro: 'O aparelho guarda músicas e mensagens de áudio sem depender de conexão com a Terra. A viagem longa pode ser cansativa, então a tripulação usa as gravações para descansar e manter uma rotina; o aparelho não substitui o rádio de comunicação.',
-                q: 'Durante uma viagem sem conexão com a Terra, uma pessoa quer ouvir uma mensagem gravada para relaxar. Qual equipamento atende a essa necessidade sem ocupar o canal de comunicação da nave?',
-                respostas: [
-                    { texto: 'O rádio, porque mensagens pessoais devem ser transmitidas pela frequência da base.', correta: false },
-                    { texto: 'O MP3 Player, que reproduz gravações armazenadas e ajuda a passar o tempo da viagem.', correta: true },
-                    { texto: 'O mapa, porque seus pontos de referência também armazenam arquivos de áudio.', correta: false }
-                ]
-            },
-            {
-                id: 'traje', nome: 'Traje Espacial', icon: '🧥',
-                livro: 'A superfície marciana pode chegar a cerca de -60°C e a atmosfera não oferece oxigênio respirável. O traje mantém o astronauta aquecido, fornece oxigênio e ajuda a proteger o corpo durante atividades fora da nave.',
-                q: 'Antes de sair para coletar uma amostra, a equipe percebe que o astronauta está sem o traje pressurizado. Qual risco torna a saída insegura mesmo que a caminhada seja curta?',
-                respostas: [
-                    { texto: 'O frio extremo e a falta de oxigênio respirável na atmosfera de Marte.', correta: true },
-                    { texto: 'A poeira pode apagar as marcações do mapa e impedir que a nave encontre o caminho de volta.', correta: false },
-                    { texto: 'A gravidade marciana é maior que a terrestre e pode prender o astronauta ao solo.', correta: false }
-                ]
-            },
-            {
-                id: 'ferramentas', nome: 'Maleta de Ferramentas', icon: '🔧',
-                livro: 'A maleta reúne ferramentas para pequenos reparos e para remover poeira acumulada nos equipamentos externos. Painéis solares cobertos produzem menos energia, por isso uma limpeza cuidadosa pode ajudar a manter sistemas essenciais funcionando.',
-                q: 'Depois de uma tempestade, a geração de energia caiu e a inspeção encontrou poeira nos painéis. Qual ação combina com o uso da maleta e ajuda a recuperar o sistema?',
-                respostas: [
-                    { texto: 'Limpar a poeira dos painéis com as ferramentas apropriadas e verificar se há alguma peça solta.', correta: true },
-                    { texto: 'Desmontar o rádio para usar suas peças como filtro e deixar os painéis cobertos.', correta: false },
-                    { texto: 'Usar o mapa para raspar os painéis e empilhar as ferramentas sobre as células solares.', correta: false }
-                ]
-            },
-            {
-                id: 'primeiros_socorros', nome: 'Kit de Primeiros Socorros', icon: '🩹',
-                livro: 'O kit contém materiais para cuidar de cortes, arranhões e outros ferimentos leves durante a exploração. Ele permite prestar os primeiros cuidados enquanto a equipe avalia se é necessário retornar à nave ou pedir orientação à base.',
-                q: 'Uma pessoa sofre um corte leve ao passar por uma rocha. Qual é a resposta mais adequada antes de a equipe decidir se continua a caminhada?',
-                respostas: [
-                    { texto: 'Usar o kit para limpar e proteger o ferimento, observar a condição da pessoa e comunicar a equipe.', correta: true },
-                    { texto: 'Aplicar uma amostra do solo sobre o corte para descobrir se a rocha contém ferro.', correta: false },
-                    { texto: 'Guardar o kit para uma emergência maior e continuar sem avaliar o ferimento.', correta: false }
-                ]
-            },
-            {
-                id: 'radio', nome: 'Rádio Comunicador', icon: '📻',
-                livro: 'O rádio mantém a tripulação em contato com a base terrestre e permite compartilhar posição, condições do equipamento e pedidos de orientação. As mensagens podem levar um tempo para chegar devido à distância entre Marte e a Terra.',
-                q: 'A equipe encontra uma falha que não consegue diagnosticar e precisa informar a base sobre a situação. O que deve fazer, considerando que a resposta pode demorar?',
-                respostas: [
-                    { texto: 'Transmitir pelo rádio a posição e os dados da falha, e aguardar levando em conta o atraso da comunicação.', correta: true },
-                    { texto: 'Usar o MP3 para enviar a mensagem instantaneamente, já que ele não depende da distância.', correta: false },
-                    { texto: 'Esperar que o mapa envie automaticamente um alerta para a Terra quando a rota mudar.', correta: false }
-                ]
-            },
-            {
-                id: 'experimentos', nome: 'Kit de Experimentos', icon: '🧪',
-                livro: 'O kit permite recolher e analisar amostras do solo, observando minerais e possíveis sinais de organismos antigos. Para que a análise seja confiável, cada amostra deve ser identificada e mantida separada das demais.',
-                q: 'Você encontra uma camada de solo diferente perto de uma cratera e quer comparar sua composição com a de outro local. Como o kit deve ser usado?',
-                respostas: [
-                    { texto: 'Coletar amostras identificadas de cada local e analisá-las separadamente para comparar os resultados.', correta: true },
-                    { texto: 'Misturar todo o solo em um recipiente e registrar apenas a cor mais comum da mistura.', correta: false },
-                    { texto: 'Usar o kit para limpar a viseira e deixar a coleta para quando a nave estiver em órbita.', correta: false }
-                ]
-            },
-            {
-                id: 'rover', nome: 'Rover Explorador', icon: '🚙',
-                livro: 'O Rover transporta a tripulação e os equipamentos por terrenos extensos e irregulares. Suas rodas ajudam a atravessar áreas que seriam cansativas ou arriscadas a pé, mas a rota ainda precisa evitar crateras e rochas instáveis.',
-                q: 'Um ponto de pesquisa fica longe da nave e o terreno entre eles tem pedras afiadas. Qual plano aproveita o Rover sem ignorar os perigos do caminho?',
-                respostas: [
-                    { texto: 'Traçar uma rota segura no mapa e usar o Rover para levar a equipe e os equipamentos até o ponto.', correta: true },
-                    { texto: 'Dirigir diretamente sobre as pedras para chegar mais rápido, dispensando o mapa e os equipamentos.', correta: false },
-                    { texto: 'Deixar o Rover parado e carregar todo o equipamento a pé para evitar gastar energia.', correta: false }
-                ]
-            },
-            {
-                id: 'bolsa_aventura', nome: 'Bolsa de Aventura', icon: '🎒',
-                livro: 'A bolsa organiza ferramentas, amostras e suprimentos para que a tripulação transporte o necessário durante uma saída. Separar os objetos por função facilita encontrar cada item sem espalhar o equipamento pelo terreno.',
-                q: 'A equipe vai investigar dois locais antes de voltar à nave. Como a bolsa ajuda a tornar essa saída mais organizada?',
-                respostas: [
-                    { texto: 'Guardar os suprimentos e separar as ferramentas das amostras para encontrá-los durante o percurso.', correta: true },
-                    { texto: 'Usar a bolsa como substituta do traje, colocando o oxigênio dentro dela para respirar.', correta: false },
-                    { texto: 'Deixar os equipamentos espalhados no primeiro ponto para reduzir o peso na volta.', correta: false }
-                ]
-            },
-            {
-                id: 'camera', nome: 'Câmera de Fotos', icon: '📷',
-                livro: 'A câmera registra imagens de formações, marcas e mudanças na superfície. As fotos ajudam a equipe a comparar locais e compartilhar evidências com a base, mas não substituem a coleta física quando uma amostra é necessária.',
-                q: 'Durante a exploração, você encontra uma marca que pode ser importante, mas não sabe se é natural. Qual registro ajuda a equipe a analisá-la depois?',
-                respostas: [
-                    { texto: 'Fotografar a marca e seu entorno antes de tocar no local, preservando o contexto da descoberta.', correta: true },
-                    { texto: 'Apagar as marcas do mapa para que a base não confunda a formação com uma rota.', correta: false },
-                    { texto: 'Usar a câmera para recolher fisicamente a marca e guardar tudo na bolsa.', correta: false }
-                ]
-            },
-            {
-                id: 'reciclador_agua', nome: 'Reciclador de Água', icon: '💧',
-                livro: 'O reciclador filtra água recuperada da umidade do ar e de resíduos líquidos da rotina da tripulação. A água tratada pode voltar ao reservatório de uso, reduzindo a dependência dos estoques levados da Terra; ela deve passar pelo ciclo de filtragem antes de ser consumida.',
-                q: 'O estoque de água limpa está baixando, mas os filtros ainda funcionam. Qual decisão reduz o consumo das reservas sem colocar a tripulação em risco?',
-                respostas: [
-                    { texto: 'Processar a água recuperada pelo reciclador e usar somente a água que passou pela filtragem.', correta: true },
-                    { texto: 'Beber qualquer líquido recuperado diretamente e desligar o sistema para poupar energia.', correta: false },
-                    { texto: 'Usar a água armazenada para limpar os painéis e esperar a próxima carga enviada da Terra.', correta: false }
-                ]
-            },
-            {
-                id: 'carregador_solar', nome: 'Carregador Solar', icon: '☀️',
-                livro: 'O carregador converte a luz solar em energia para dispositivos portáteis. A poeira reduz a quantidade de luz que chega às células, então o painel precisa ser posicionado em uma área exposta e mantido limpo para funcionar melhor.',
-                q: 'Um equipamento portátil está quase sem carga após uma tempestade de poeira. Qual sequência favorece a recarga usando o carregador?',
-                respostas: [
-                    { texto: 'Limpar a superfície do painel e posicioná-lo onde receba luz solar sem bloqueios.', correta: true },
-                    { texto: 'Cobrir o painel para protegê-lo da luz e conectar o rádio no lugar do dispositivo.', correta: false },
-                    { texto: 'Enterrar o carregador perto da nave para evitar que o vento leve a energia acumulada.', correta: false }
-                ]
-            },
-            {
-                id: 'sinalizador', nome: 'Sinalizador de Emergência', icon: '🚨',
-                livro: 'O sinalizador transmite um alerta de localização quando a equipe precisa ser encontrada ou quando o rádio principal falha. Ele deve ser ativado em uma emergência, pois sua bateria é limitada e o sinal pode levar tempo para alcançar a base.',
-                q: 'A equipe se afastou da rota e o rádio principal parou de responder. Qual uso do sinalizador aumenta a chance de ser localizada sem desperdiçar seu recurso?',
-                respostas: [
-                    { texto: 'Ativá-lo como alerta de emergência e manter a equipe próxima à posição transmitida.', correta: true },
-                    { texto: 'Ligá-lo durante toda a missão como iluminação e continuar mudando de lugar.', correta: false },
-                    { texto: 'Usá-lo para recarregar o rádio e aguardar que ele desenhe uma nova rota no mapa.', correta: false }
-                ]
-            },
-            {
-                id: 'manta_termica', nome: 'Manta Térmica', icon: '🛌',
-                livro: 'A manta térmica ajuda a reduzir a perda de calor durante períodos de descanso ou espera. Ela complementa a proteção do traje, mas não substitui o traje espacial nem fornece oxigênio para uma caminhada fora da nave.',
-                q: 'A tripulação precisa aguardar uma janela segura para sair, e um astronauta está perdendo calor durante o descanso. Qual equipamento oferece apoio sem substituir a proteção principal?',
-                respostas: [
-                    { texto: 'A manta térmica, usada como camada adicional enquanto o traje continua sendo a proteção essencial.', correta: true },
-                    { texto: 'A bolsa de aventura, que mantém oxigênio circulando e substitui o traje durante a espera.', correta: false },
-                    { texto: 'O carregador solar, colocado sobre o corpo para fornecer calor e ar respirável.', correta: false }
-                ]
-            },
-            {
-                id: 'tubos_amostra', nome: 'Tubos de Amostra', icon: '🧫',
-                livro: 'Os tubos armazenam pequenas porções de solo ou gelo coletadas em pontos diferentes. Fechar e identificar cada tubo impede que as amostras se misturem e permite que a equipe saiba exatamente onde cada material foi encontrado.',
-                q: 'Você recolheu gelo de uma cratera e solo de uma planície para uma comparação posterior. Como evitar que a análise perca a origem de cada material?',
-                respostas: [
-                    { texto: 'Guardar cada material em um tubo separado, fechado e identificado com o local de coleta.', correta: true },
-                    { texto: 'Colocar os dois materiais no mesmo tubo e anotar apenas que vieram de Marte.', correta: false },
-                    { texto: 'Deixar os tubos abertos dentro da bolsa para que a umidade indique a origem das amostras.', correta: false }
-                ]
-            },
-            {
-                id: 'bateria_reserva', nome: 'Bateria Reserva', icon: '🔋',
-                livro: 'A bateria reserva mantém equipamentos essenciais funcionando quando a energia solar cai ou um dispositivo fica sem carga. Como a capacidade é limitada, a equipe deve priorizar comunicações e instrumentos necessários para concluir a missão.',
-                q: 'Uma tempestade reduziu a energia e restou uma bateria reserva. O rádio e um aparelho de entretenimento estão descarregados. Qual prioridade protege melhor a missão?',
-                respostas: [
-                    { texto: 'Reservar a carga para o rádio e outros equipamentos essenciais, deixando o entretenimento para depois.', correta: true },
-                    { texto: 'Usar toda a bateria no MP3 para manter a rotina e esperar que a nave recarregue o rádio.', correta: false },
-                    { texto: 'Dividir a bateria sem verificar a necessidade de cada equipamento ou a duração da tempestade.', correta: false }
-                ]
-            },
-            {
-                id: 'oculos_poeira', nome: 'Óculos de Proteção', icon: '🥽',
-                livro: 'Os óculos protegem os olhos de partículas levantadas pelo vento e ajudam a manter a visão durante a exploração. Eles complementam o capacete e a viseira; não substituem a vedação nem os sistemas de suporte do traje.',
-                q: 'O vento começa a levantar poeira fina enquanto a equipe inspeciona o terreno. Que proteção deve ser usada sem abrir mão dos demais sistemas do traje?',
-                respostas: [
-                    { texto: 'Os óculos de proteção para reduzir o contato da poeira com os olhos, mantendo o capacete e a viseira fechados.', correta: true },
-                    { texto: 'O mapa sobre o rosto, pois as marcações filtram partículas e substituem a vedação do capacete.', correta: false },
-                    { texto: 'A câmera diante dos olhos, usando a lente como substituta da viseira durante a tempestade.', correta: false }
-                ]
-            },
-            {
-                id: 'antena_portatil', nome: 'Antena Portátil', icon: '📡',
-                livro: 'A antena portátil melhora o alcance do rádio quando obstáculos ou a posição da equipe dificultam a comunicação. Ela precisa ser apontada e instalada em um local desobstruído; mesmo com sinal melhor, a distância ainda causa atraso nas mensagens.',
-                q: 'Uma encosta está bloqueando parte do sinal durante o contato com a Terra. Como combinar a antena portátil e o rádio para tentar melhorar a comunicação?',
-                respostas: [
-                    { texto: 'Instalar a antena em um ponto desobstruído, direcioná-la para a base e transmitir pelo rádio.', correta: true },
-                    { texto: 'Enterrar a antena junto ao Rover e usar o MP3 para contornar o atraso entre os planetas.', correta: false },
-                    { texto: 'Apontar a antena para o solo e desligar o rádio para que o sinal atravesse a encosta.', correta: false }
-                ]
-            },
-            {
-                id: 'remendo_traje', nome: 'Kit de Remendo do Traje', icon: '🩹',
-                livro: 'O kit permite vedar temporariamente pequenos danos na camada externa do traje até que a equipe retorne para uma inspeção completa. Um remendo é uma medida de emergência e não torna seguro ignorar uma falha ou continuar uma atividade longa.',
-                q: 'Durante a inspeção, aparece um pequeno dano externo no traje. Qual procedimento trata o problema sem confundir uma reparação temporária com uma solução definitiva?',
-                respostas: [
-                    { texto: 'Aplicar o remendo para conter o dano e retornar à nave para verificar o traje por completo.', correta: true },
-                    { texto: 'Continuar a exploração normalmente, pois qualquer remendo transforma o traje em equipamento novo.', correta: false },
-                    { texto: 'Cobrir o dano com uma amostra de solo e desligar o rádio para evitar alertas da base.', correta: false }
-                ]
-            }
-        ];
-
-        const totalRequisitados = 5;
-        const screens = {
-            menu: document.getElementById('screen-menu'),
-            game: document.getElementById('screen-game'),
-            ship: document.getElementById('screen-ship'),
-            mars: document.getElementById('screen-mars'),
-            win: document.getElementById('screen-win')
-        };
-
-        const playerForm = document.getElementById('player-form');
-        const inputNome = document.getElementById('nomeJogador');
-        const checklistVisual = document.getElementById('checklist-visual');
-        const playerSprite = document.getElementById('player-sprite');
-        const gameWorld = document.getElementById('game-world');
-        const interactPrompt = document.getElementById('interact-prompt');
-        const bookOwnerName = document.getElementById('book-owner-name');
-        const listaLivro = document.getElementById('lista-paginas-livro');
-        const modalLivro = document.getElementById('modal-livro');
-        const modalQuiz = document.getElementById('modal-quiz');
-        const quizTitle = document.getElementById('quiz-item-title');
-        const quizQuestionText = document.getElementById('quiz-question-text');
-        const quizOptions = document.getElementById('quiz-options-container');
-        const feedbackMsg = document.getElementById('feedback-msg');
-        const btnConfirmar = document.getElementById('btn-confirmar-coleta');
-        const btnAbrirLivro = document.getElementById('btn-abrir-livro');
-        const btnFecharLivro = document.getElementById('btn-fechar-livro');
-        const btnAbortar = document.getElementById('btn-abortar');
-        const btnNovaMissao = document.getElementById('btn-nova-missao');
-        const winName = document.getElementById('win-name');
-        const winItems = document.getElementById('win-items');
-        const sealAlbum = document.getElementById('seal-album');
-        const cableScreen = document.getElementById('ship-cables');
-        const sequenceScreen = document.getElementById('ship-sequence');
-        const shipResult = document.getElementById('ship-result');
-        const cableList = document.getElementById('cable-list');
-        const connectorList = document.getElementById('connector-list');
-        const cableStatus = document.getElementById('cable-status');
-        const cableTimer = document.getElementById('cable-timer');
-        const sequenceTimer = document.getElementById('sequence-timer');
-        const sequenceKeys = document.getElementById('sequence-keys');
-        const sequenceStatus = document.getElementById('sequence-status');
-        const shipResultIcon = document.getElementById('ship-result-icon');
-        const shipResultTitle = document.getElementById('ship-result-title');
-        const shipResultMessage = document.getElementById('ship-result-message');
-        const btnRetryLaunch = document.getElementById('btn-retry-launch');
-        const btnLandMars = document.getElementById('btn-land-mars');
-        const marsWorld = document.getElementById('mars-world');
-        const marsPlayerSprite = document.getElementById('mars-player-sprite');
-        const marsPrompt = document.getElementById('mars-prompt');
-        const marsFeedback = document.getElementById('mars-feedback');
-        const marsObjectives = document.getElementById('mars-objectives');
-        const marsInventory = document.getElementById('mars-inventory');
-
-        let itensMissao = [];
-        let itensColetados = JSON.parse(localStorage.getItem('itensColetados') || '[]');
-        let posPlayer = { x: 50, y: 50 };
-        let currentTargetId = null;
-        let itemEmFoco = null;
-        const VELOCIDADE = 0.32;
-        const teclasPressionadas = new Set();
-        const cabos = [
-            { id: 'laranja', simbolo: '●', cor: 'var(--cor-laranja)' },
-            { id: 'telha', simbolo: '■', cor: 'var(--cor-vermelho-telha)' },
-            { id: 'azul', simbolo: '▲', cor: 'var(--cor-azul-cinzento)' },
-            { id: 'branco', simbolo: '◆', cor: 'var(--cor-texto-claro)' }
-        ];
-        const teclasIgnicao = [
-            { code: 'KeyW', label: 'W' },
-            { code: 'KeyA', label: 'A' },
-            { code: 'KeyS', label: 'S' },
-            { code: 'KeyD', label: 'D' },
-            { code: 'Space', label: 'ESPAÇO' }
-        ];
-        const selosDaExpedicao = [
-            { id: 'laboratorio', titulo: 'Laboratório', imagem: '🧪', descricao: 'Suprimentos reunidos no Overworld.' },
-            { id: 'decolagem', titulo: 'Decolagem Perfeita', imagem: '🚀', descricao: 'Sistemas conectados e ignição concluída.' },
-            { id: 'zibzab', titulo: 'Encontro com ZibZab', imagem: '👾', descricao: 'Primeiro contato registrado em Marte.' }
-        ];
-        const pontosMarte = [
-            { id: 'cratera', nome: 'Cratera de gelo antigo', icon: '🧊', x: 24, y: 32, descoberta: 'Gelo preservado por eras revela que Marte já teve água líquida.' },
-            { id: 'rocha', nome: 'Rocha de ferro brilhante', icon: '🪨', x: 70, y: 48, descoberta: 'O brilho metálico confirma a presença de minerais ricos em ferro.' },
-            { id: 'pegada', nome: 'Pegada estranha', icon: '👣', x: 42, y: 76, descoberta: 'A marca não pertence ao traje nem ao Rover. Alguém esteve aqui.' }
-        ];
-
-        let selosConquistados = [];
-        let caboSelecionado = null;
-        let cabosConectados = new Set();
-        let conectoresEmbaralhados = [];
-        let errosCabos = 0;
-        let sequenciaAtual = [];
-        let indiceSequencia = 0;
-        let sequenciaAtiva = false;
-        let timerNave = null;
-        let segundosNave = 0;
-        let pontosInvestigados = new Set();
-        let alvoMarteId = null;
-        const objectPositions = {
-            comida: { x: 18, y: 26 },
-            mapa: { x: 62, y: 20 },
-            mp3: { x: 26, y: 70 },
-            traje: { x: 76, y: 40 },
-            ferramentas: { x: 58, y: 76 },
-            primeiros_socorros: { x: 30, y: 48 },
-            radio: { x: 50, y: 18 },
-            experimentos: { x: 82, y: 74 },
-            rover: { x: 22, y: 82 },
-            bolsa_aventura: { x: 84, y: 86 },
-            camera: { x: 68, y: 58 }
-        };
-
-        function showScreen(name) {
-            teclasPressionadas.clear();
-            Object.entries(screens).forEach(([key, el]) => {
-                el.classList.toggle('active', key === name);
-            });
-        }
-
-        function getNomeJogador() {
-            return (localStorage.getItem('nomeJogador') || 'VIAJANTE').toUpperCase();
-        }
-
-        function openLivro() {
-            teclasPressionadas.clear();
-            modalLivro.classList.add('open');
-            modalQuiz.classList.remove('open');
-        }
-
-        function closeLivro() {
-            modalLivro.classList.remove('open');
-        }
-
-        function atualizarChecklist() {
-            const bolinhas = [];
-            for (let i = 0; i < totalRequisitados; i++) {
-                bolinhas.push(i < itensColetados.length ? '🟢' : '⚪');
-            }
-            checklistVisual.textContent = `Checklist: ${bolinhas.join(' ')}`;
-        }
-
-        function renderPlayer() {
-            playerSprite.style.left = `${posPlayer.x}%`;
-            playerSprite.style.top = `${posPlayer.y}%`;
-            updateTargetProximity();
-        }
-
-        function renderPlayerMarte() {
-            marsPlayerSprite.style.left = `${posPlayer.x}%`;
-            marsPlayerSprite.style.top = `${posPlayer.y}%`;
-            updateMarsTargetProximity();
-        }
-
-        function renderMapObjects() {
-            if (!gameWorld) return;
-            gameWorld.querySelectorAll('.map-item').forEach((node) => node.remove());
-
-            itensMissao.forEach((item) => {
-                if (itensColetados.includes(item.id)) return;
-
-                const pos = objectPositions[item.id] || { x: 50, y: 50 };
-                const marker = document.createElement('div');
-                marker.className = 'map-item';
-                if (currentTargetId === item.id) {
-                    marker.classList.add('perto');
-                }
-                marker.dataset.itemId = item.id;
-                marker.textContent = item.icon;
-                marker.style.left = `${pos.x}%`;
-                marker.style.top = `${pos.y}%`;
-                marker.title = item.nome;
-                gameWorld.appendChild(marker);
-            });
-        }
-
-        function updateTargetProximity() {
-            let nearestId = null;
-            let nearestDistance = Infinity;
-
-            itensMissao.forEach((item) => {
-                if (itensColetados.includes(item.id)) return;
-                const pos = objectPositions[item.id] || { x: 50, y: 50 };
-                const distance = Math.hypot(posPlayer.x - pos.x, posPlayer.y - pos.y);
-                if (distance < 7 && distance < nearestDistance) {
-                    nearestId = item.id;
-                    nearestDistance = distance;
-                }
-            });
-
-            const alvoMudou = nearestId !== currentTargetId;
-            currentTargetId = nearestId;
-            if (alvoMudou) {
-                gameWorld.querySelectorAll('.map-item').forEach((marker) => {
-                    marker.classList.toggle('perto', marker.dataset.itemId === currentTargetId);
-                });
-            }
-
-            const item = itensMissao.find((missaoItem) => missaoItem.id === currentTargetId);
-            if (item) {
-                const textoPrompt = `[ ESPAÇO ] investigar ${item.nome}`;
-                if (interactPrompt.textContent !== textoPrompt) interactPrompt.textContent = textoPrompt;
-                if (!interactPrompt.classList.contains('visible')) interactPrompt.classList.add('visible');
-            } else if (interactPrompt.classList.contains('visible')) {
-                interactPrompt.classList.remove('visible');
-            }
-        }
-
-        function registrarSelo(id) {
-            if (!selosConquistados.includes(id)) selosConquistados.push(id);
-        }
-
-        function embaralhar(lista) {
-            const resultado = [...lista];
-            for (let indice = resultado.length - 1; indice > 0; indice--) {
-                const aleatorio = Math.floor(Math.random() * (indice + 1));
-                [resultado[indice], resultado[aleatorio]] = [resultado[aleatorio], resultado[indice]];
-            }
-            return resultado;
-        }
-
-        function limparTimerNave() {
-            if (timerNave) clearInterval(timerNave);
-            timerNave = null;
-        }
-
-        function iniciarTimerNave(segundos, elemento, aoTerminar) {
-            limparTimerNave();
-            segundosNave = segundos;
-            elemento.textContent = `${segundosNave}s`;
-            timerNave = setInterval(() => {
-                segundosNave -= 1;
-                elemento.textContent = `${segundosNave}s`;
-                if (segundosNave <= 0) {
-                    limparTimerNave();
-                    aoTerminar();
-                }
-            }, 1000);
-        }
-
-        function renderizarCabos() {
-            cableList.innerHTML = '';
-            connectorList.innerHTML = '';
-
-            cabos.forEach((cabo) => {
-                const botao = document.createElement('button');
-                botao.type = 'button';
-                botao.className = 'cable-button';
-                botao.style.setProperty('--cable-color', cabo.cor);
-                botao.textContent = cabosConectados.has(cabo.id) ? `${cabo.simbolo} ✓` : cabo.simbolo;
-                botao.setAttribute('aria-label', `Cabo símbolo ${cabo.simbolo}`);
-                botao.title = `Cabo ${cabo.simbolo}`;
-                botao.disabled = cabosConectados.has(cabo.id);
-                botao.classList.toggle('selected', caboSelecionado === cabo.id);
-                botao.classList.toggle('connected', cabosConectados.has(cabo.id));
-                botao.addEventListener('click', () => {
-                    caboSelecionado = cabo.id;
-                    cableStatus.textContent = `Símbolo ${cabo.simbolo} selecionado. Agora escolha o mesmo símbolo na coluna da direita.`;
-                    renderizarCabos();
-                });
-                cableList.appendChild(botao);
-            });
-
-            conectoresEmbaralhados.forEach((conector) => {
-                const botao = document.createElement('button');
-                botao.type = 'button';
-                botao.className = 'cable-button connector-button';
-                botao.style.setProperty('--cable-color', conector.cor);
-                botao.textContent = cabosConectados.has(conector.id) ? `${conector.simbolo} ✓` : conector.simbolo;
-                botao.setAttribute('aria-label', `Conector símbolo ${conector.simbolo}`);
-                botao.title = `Conector ${conector.simbolo}`;
-                botao.disabled = cabosConectados.has(conector.id);
-                botao.classList.toggle('connected', cabosConectados.has(conector.id));
-                botao.addEventListener('click', () => conectarCabo(conector.id));
-                connectorList.appendChild(botao);
-            });
-        }
-
-        function conectarCabo(idConector) {
-            if (!caboSelecionado) {
-                cableStatus.textContent = 'Primeiro selecione um símbolo na coluna da esquerda.';
-                return;
-            }
-
-            if (caboSelecionado === idConector) {
-                cabosConectados.add(idConector);
-                caboSelecionado = null;
-                cableStatus.textContent = `Conexão certa: ${cabosConectados.size} de ${cabos.length}. Os símbolos ligados ficam marcados com ✓.`;
-                renderizarCabos();
-                if (cabosConectados.size === cabos.length) iniciarSequenciaIgnicao();
-                return;
-            }
-
-            errosCabos += 1;
-            caboSelecionado = null;
-            if (errosCabos >= 2) {
-                mostrarResultadoNave('falha-total');
-                return;
-            }
-
-            cableStatus.textContent = `Os símbolos não combinam (${errosCabos}/2 erros). Selecione outro conector.`;
-            renderizarCabos();
-        }
-
-        function iniciarNave() {
-            limparTimerNave();
-            showScreen('ship');
-            caboSelecionado = null;
-            cabosConectados = new Set();
-            conectoresEmbaralhados = embaralhar(cabos);
-            if (conectoresEmbaralhados.every((conector, indice) => conector.id === cabos[indice].id)) {
-                conectoresEmbaralhados.push(conectoresEmbaralhados.shift());
-            }
-            errosCabos = 0;
-            sequenciaAtual = [];
-            indiceSequencia = 0;
-            sequenciaAtiva = false;
-            cableScreen.hidden = false;
-            sequenceScreen.hidden = true;
-            shipResult.hidden = true;
-            btnRetryLaunch.hidden = false;
-            btnLandMars.hidden = true;
-            cableStatus.textContent = 'Selecione um símbolo à esquerda e encontre o mesmo símbolo à direita.';
-            renderizarCabos();
-            iniciarTimerNave(20, cableTimer, () => mostrarResultadoNave('falha-total'));
-        }
-
-        function renderizarSequencia() {
-            sequenceKeys.innerHTML = sequenciaAtual.map((tecla, indice) => {
-                const estado = indice < indiceSequencia ? 'completed' : indice === indiceSequencia ? 'current' : '';
-                return `<span class="sequence-key ${estado}">${tecla.label}</span>`;
-            }).join('');
-            sequenceStatus.textContent = `Teclas corretas: ${indiceSequencia} de ${sequenciaAtual.length}`;
-        }
-
-        function iniciarSequenciaIgnicao() {
-            limparTimerNave();
-            cableScreen.hidden = true;
-            sequenceScreen.hidden = false;
-            sequenciaAtual = Array.from({ length: 5 }, () => teclasIgnicao[Math.floor(Math.random() * teclasIgnicao.length)]);
-            indiceSequencia = 0;
-            sequenciaAtiva = true;
-            renderizarSequencia();
-            iniciarTimerNave(8, sequenceTimer, () => {
-                sequenciaAtiva = false;
-                mostrarResultadoNave('meia-boca');
-            });
-        }
-
-        function processarTeclaIgnicao(event) {
-            if (!sequenciaAtiva || event.repeat) return;
-            event.preventDefault();
-
-            if (event.code !== sequenciaAtual[indiceSequencia].code) {
-                sequenciaAtiva = false;
-                mostrarResultadoNave('meia-boca');
-                return;
-            }
-
-            indiceSequencia += 1;
-            if (indiceSequencia === sequenciaAtual.length) {
-                sequenciaAtiva = false;
-                mostrarResultadoNave('perfeito');
-                return;
-            }
-            renderizarSequencia();
-        }
-
-        function mostrarResultadoNave(resultado) {
-            limparTimerNave();
-            sequenciaAtiva = false;
-            cableScreen.hidden = true;
-            sequenceScreen.hidden = true;
-            shipResult.hidden = false;
-            btnRetryLaunch.hidden = resultado === 'perfeito';
-            btnLandMars.hidden = resultado !== 'perfeito';
-
-            if (resultado === 'falha-total') {
-                shipResultIcon.textContent = '💥';
-                shipResultTitle.textContent = 'Falha total';
-                shipResultMessage.textContent = 'A nave explodiu ainda na Terra. Os cabos foram conectados incorretamente ou o tempo acabou.';
-                return;
-            }
-
-            if (resultado === 'meia-boca') {
-                shipResultIcon.textContent = '🛰️';
-                shipResultTitle.textContent = 'Decolagem meia-boca';
-                shipResultMessage.textContent = 'A nave ficou sem força e o astronauta acabou conhecendo Jesus no espaço. Tente outra sequência.';
-                return;
-            }
-
-            registrarSelo('decolagem');
-            shipResultIcon.textContent = '🚀';
-            shipResultTitle.textContent = 'Decolagem perfeita!';
-            shipResultMessage.textContent = 'Todos os sistemas responderam. A nave está pronta para pousar em Marte.';
-        }
-
-        function iniciarExploracaoMarte() {
-            limparTimerNave();
-            showScreen('mars');
-            posPlayer = { x: 12, y: 82 };
-            pontosInvestigados = new Set();
-            alvoMarteId = null;
-            marsFeedback.textContent = 'Uma nova paisagem se estende diante de você.';
-            marsObjectives.textContent = 'Investigue 3 pontos no planeta.';
-            marsInventory.innerHTML = '';
-
-            itensColetados.forEach((id) => {
-                const item = todosItens.find((obj) => obj.id === id);
-                if (!item) return;
-                const etiqueta = document.createElement('span');
-                etiqueta.className = 'mars-inventory-item';
-                etiqueta.textContent = item.icon;
-                etiqueta.title = item.nome;
-                marsInventory.appendChild(etiqueta);
-            });
-
-            renderizarPontosMarte();
-            renderPlayerMarte();
-        }
-
-        function renderizarPontosMarte() {
-            marsWorld.querySelectorAll('.mars-object').forEach((objeto) => objeto.remove());
-            const alienLiberado = pontosInvestigados.size === pontosMarte.length;
-            const pontosVisiveis = pontosMarte.filter((ponto) => !pontosInvestigados.has(ponto.id));
-            if (alienLiberado) {
-                pontosVisiveis.push({ id: 'zibzab', nome: 'ZibZab', icon: '👾', x: 84, y: 24, alien: true });
-            }
-
-            pontosVisiveis.forEach((ponto) => {
-                const marcador = document.createElement('div');
-                marcador.className = `mars-object${ponto.alien ? ' zibzab-marker' : ''}`;
-                marcador.dataset.poiId = ponto.id;
-                marcador.textContent = ponto.icon;
-                marcador.title = ponto.nome;
-                marcador.style.left = `${ponto.x}%`;
-                marcador.style.top = `${ponto.y}%`;
-                if (ponto.id === alvoMarteId) marcador.classList.add('perto');
-                marsWorld.appendChild(marcador);
-            });
-        }
-
-        function updateMarsTargetProximity() {
-            const marcadores = [...pontosMarte.filter((ponto) => !pontosInvestigados.has(ponto.id))];
-            if (pontosInvestigados.size === pontosMarte.length) {
-                marcadores.push({ id: 'zibzab', nome: 'ZibZab', x: 84, y: 24, alien: true });
-            }
-
-            let alvoMaisProximo = null;
-            let menorDistancia = Infinity;
-            marcadores.forEach((ponto) => {
-                const distancia = Math.hypot(posPlayer.x - ponto.x, posPlayer.y - ponto.y);
-                if (distancia < 7 && distancia < menorDistancia) {
-                    alvoMaisProximo = ponto;
-                    menorDistancia = distancia;
-                }
-            });
-
-            const novoAlvoId = alvoMaisProximo ? alvoMaisProximo.id : null;
-            const alvoMudou = novoAlvoId !== alvoMarteId;
-            alvoMarteId = novoAlvoId;
-            if (alvoMudou) {
-                marsWorld.querySelectorAll('.mars-object').forEach((marcador) => {
-                    marcador.classList.toggle('perto', marcador.dataset.poiId === alvoMarteId);
-                });
-            }
-
-            if (!alvoMaisProximo) {
-                if (marsPrompt.classList.contains('visible')) marsPrompt.classList.remove('visible');
-            } else if (alvoMaisProximo.alien) {
-                const textoPrompt = '[ ESPAÇO ] encontrar ZibZab';
-                if (marsPrompt.textContent !== textoPrompt) marsPrompt.textContent = textoPrompt;
-                if (!marsPrompt.classList.contains('visible')) marsPrompt.classList.add('visible');
-            } else {
-                const textoPrompt = `[ ESPAÇO ] investigar ${alvoMaisProximo.nome}`;
-                if (marsPrompt.textContent !== textoPrompt) marsPrompt.textContent = textoPrompt;
-                if (!marsPrompt.classList.contains('visible')) marsPrompt.classList.add('visible');
-            }
-        }
-
-        function interagirEmMarte() {
-            if (!alvoMarteId) return;
-            if (alvoMarteId === 'zibzab') {
-                registrarSelo('zibzab');
-                marsPrompt.classList.remove('visible');
-                marsFeedback.textContent = '📸 Foto registrada! "<zibzab-aaah…bleeee>"';
-                renderizarTelaVitoria();
-                setTimeout(() => showScreen('win'), 1100);
-                return;
-            }
-
-            const ponto = pontosMarte.find((item) => item.id === alvoMarteId);
-            if (!ponto) return;
-            pontosInvestigados.add(ponto.id);
-            const inventario = itensColetados
-                .map((id) => todosItens.find((item) => item.id === id))
-                .filter(Boolean)
-                .map((item) => item.icon)
-                .join(' ');
-            marsFeedback.textContent = `Equipamentos da missão (${inventario}): ${ponto.descoberta}`;
-            marsObjectives.textContent = pontosInvestigados.size === pontosMarte.length
-                ? 'Os três locais foram investigados. Algo apareceu no horizonte!'
-                : `Pontos investigados: ${pontosInvestigados.size} de ${pontosMarte.length}`;
-            alvoMarteId = null;
-            renderizarPontosMarte();
-            updateMarsTargetProximity();
-        }
-
-        function renderizarTelaVitoria() {
-            winName.textContent = getNomeJogador();
-            winItems.innerHTML = '';
-            itensColetados.forEach((id) => {
-                const item = todosItens.find((obj) => obj.id === id);
-                if (!item) return;
-                const linha = document.createElement('li');
-                linha.textContent = `${item.icon} ${item.nome}`;
-                winItems.appendChild(linha);
-            });
-
-            sealAlbum.innerHTML = '';
-            selosDaExpedicao.forEach((selo) => {
-                const conquistado = selosConquistados.includes(selo.id);
-                const cartao = document.createElement('article');
-                cartao.className = `seal-card${conquistado ? ' earned' : ''}`;
-                const imagem = document.createElement('div');
-                imagem.className = 'seal-photo';
-                imagem.textContent = conquistado ? selo.imagem : '🔒';
-                const titulo = document.createElement('h3');
-                titulo.textContent = selo.titulo;
-                const descricao = document.createElement('p');
-                descricao.textContent = conquistado ? selo.descricao : 'Ainda não conquistado';
-                cartao.append(imagem, titulo, descricao);
-                sealAlbum.appendChild(cartao);
-            });
-        }
-
-        function abrirQuiz(item) {
-            if (itensColetados.includes(item.id)) return;
-            teclasPressionadas.clear();
-            itemEmFoco = item;
-            quizTitle.textContent = `${item.icon} ${item.nome}`;
-            quizQuestionText.textContent = item.q;
-            quizOptions.replaceChildren();
-            embaralhar(item.respostas).forEach((resposta) => {
-                const label = document.createElement('label');
-                label.className = 'quiz-option-label';
-                const radio = document.createElement('input');
-                radio.type = 'radio';
-                radio.name = 'quiz-ans';
-                radio.value = resposta.correta ? 'correta' : 'incorreta';
-                const texto = document.createElement('span');
-                texto.className = 'quiz-option-text';
-                texto.textContent = resposta.texto;
-                label.append(radio, texto);
-                quizOptions.appendChild(label);
-            });
-            feedbackMsg.textContent = '';
-            modalQuiz.classList.add('open');
-        }
-
-        function iniciarOverworld() {
-            limparTimerNave();
-            const idsUltimaMissao = JSON.parse(localStorage.getItem('itensMissaoAnterior') || '[]');
-            const itensNovos = todosItens.filter((item) => !idsUltimaMissao.includes(item.id));
-            const poolMissao = itensNovos.length >= totalRequisitados ? itensNovos : todosItens;
-            itensMissao = embaralhar(poolMissao).slice(0, totalRequisitados);
-            localStorage.setItem('itensMissaoAnterior', JSON.stringify(itensMissao.map((item) => item.id)));
-            itensColetados = [];
-            selosConquistados = [];
-            localStorage.removeItem('itensColetados');
-            posPlayer = { x: 50, y: 50 };
-            currentTargetId = null;
-            itemEmFoco = null;
-
-            bookOwnerName.textContent = getNomeJogador();
-            listaLivro.innerHTML = itensMissao.map((item) => `
-                <div style="border-bottom: 1px dashed var(--cor-marrom-cinza); padding-bottom: 8px;">
-                    <strong style="color: var(--cor-laranja);">${item.icon} ${item.nome}:</strong>
-                    <span style="font-size: 0.9rem; color: var(--cor-texto-claro);"> ${item.livro}</span>
-                </div>
-            `).join('');
-
-            atualizarChecklist();
-            renderMapObjects();
-            renderPlayer();
-            openLivro();
-        }
-
-        function confirmarResposta() {
-            if (!itemEmFoco) return;
-            const resposta = document.querySelector('input[name="quiz-ans"]:checked');
-            if (!resposta) {
-                feedbackMsg.textContent = 'Escolha uma alternativa antes de confirmar.';
-                return;
-            }
-
-            if (resposta.value === 'correta') {
-                itensColetados.push(itemEmFoco.id);
-                localStorage.setItem('itensColetados', JSON.stringify(itensColetados));
-                modalQuiz.classList.remove('open');
-                currentTargetId = null;
-                renderMapObjects();
-                updateTargetProximity();
-                atualizarChecklist();
-                feedbackMsg.textContent = 'Resposta certa! Item coletado.';
-
-                if (itensColetados.length >= totalRequisitados) {
-                    registrarSelo('laboratorio');
-                    setTimeout(iniciarNave, 500);
-                }
-            } else {
-                feedbackMsg.textContent = 'Errou! Fechando o quiz e lendo o guia novamente...';
-                setTimeout(() => {
-                    modalQuiz.classList.remove('open');
-                    openLivro();
-                }, 1200);
-            }
-        }
-
-        playerForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            const nome = inputNome.value.trim() || 'VIAJANTE';
-            localStorage.setItem('nomeJogador', nome.toUpperCase());
-            showScreen('game');
-            iniciarOverworld();
-        });
-
-        btnAbrirLivro.addEventListener('click', openLivro);
-        btnFecharLivro.addEventListener('click', closeLivro);
-        btnConfirmar.addEventListener('click', confirmarResposta);
-        btnAbortar.addEventListener('click', () => {
-            itensColetados = [];
-            localStorage.removeItem('itensColetados');
-            showScreen('menu');
-        });
-
-        btnNovaMissao.addEventListener('click', () => {
-            limparTimerNave();
-            itensColetados = [];
-            selosConquistados = [];
-            localStorage.removeItem('itensColetados');
-            inputNome.value = '';
-            showScreen('menu');
-        });
-
-        btnRetryLaunch.addEventListener('click', iniciarNave);
-        btnLandMars.addEventListener('click', iniciarExploracaoMarte);
-
-        document.addEventListener('keydown', (event) => {
-            if (screens.ship.classList.contains('active')) {
-                if (sequenciaAtiva) processarTeclaIgnicao(event);
-                return;
-            }
-
-            const overworldAtivo = screens.game.classList.contains('active');
-            const marteAtivo = screens.mars.classList.contains('active');
-            if (!overworldAtivo && !marteAtivo) return;
-
-            const modalAberto = overworldAtivo && (modalLivro.classList.contains('open') || modalQuiz.classList.contains('open'));
-            if (event.code === 'Space') {
-                if (modalAberto || event.repeat) return;
-                event.preventDefault();
-                if (overworldAtivo) {
-                    const item = currentTargetId ? itensMissao.find((obj) => obj.id === currentTargetId) : null;
-                    if (item) abrirQuiz(item);
-                } else {
-                    interagirEmMarte();
-                }
-                return;
-            }
-
-            const teclasDeMovimento = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'KeyA', 'KeyD', 'KeyW', 'KeyS'];
-            if (!teclasDeMovimento.includes(event.code)) return;
-            event.preventDefault();
-            if (!modalAberto) teclasPressionadas.add(event.code);
-        });
-
-        document.addEventListener('keyup', (event) => {
-            teclasPressionadas.delete(event.code);
-        });
-
-        window.addEventListener('blur', () => teclasPressionadas.clear());
-
-        function atualizarMovimento() {
-            const overworldAtivo = screens.game.classList.contains('active');
-            const marteAtivo = screens.mars.classList.contains('active');
-            const modalAberto = overworldAtivo && (modalLivro.classList.contains('open') || modalQuiz.classList.contains('open'));
-            if ((overworldAtivo || marteAtivo) && !modalAberto) {
-                const esquerda = teclasPressionadas.has('ArrowLeft') || teclasPressionadas.has('KeyA');
-                const direita = teclasPressionadas.has('ArrowRight') || teclasPressionadas.has('KeyD');
-                const cima = teclasPressionadas.has('ArrowUp') || teclasPressionadas.has('KeyW');
-                const baixo = teclasPressionadas.has('ArrowDown') || teclasPressionadas.has('KeyS');
-                const dx = Number(direita) - Number(esquerda);
-                const dy = Number(baixo) - Number(cima);
-
-                if (dx !== 0 || dy !== 0) {
-                    const distancia = Math.hypot(dx, dy);
-                    posPlayer.x = Math.min(96, Math.max(4, posPlayer.x + (dx / distancia) * VELOCIDADE));
-                    posPlayer.y = Math.min(92, Math.max(8, posPlayer.y + (dy / distancia) * VELOCIDADE));
-                    if (overworldAtivo) renderPlayer();
-                    else renderPlayerMarte();
-                }
-            }
-
-            requestAnimationFrame(atualizarMovimento);
-        }
-
-        requestAnimationFrame(atualizarMovimento);
-
-        if (window.location.hash === '#win') {
-            showScreen('win');
-        } else if (window.location.hash === '#game') {
-            showScreen('game');
-            iniciarOverworld();
-        } else {
-            showScreen('menu');
-        }
-    </script>
+<div class="background-stars">
+<div class="star s1">✦</div>
+<div class="star s2">✦</div>
+<div class="star s3">✦</div>
+<div class="star s4">✦</div>
+</div>
+<main>
+<section id="screen-menu" class="screen active">
+<div class="menu-container">
+<div class="menu-left">
+<header class="menu-header">
+<span class="star-decor-left">✦</span>
+<h1 class="title-beyond">Bowye</h1>
+<span class="star-decor-right">✦</span>
+<h2 class="title-time">MARS</h2>
+</header>
+<form id="player-form" class="player-form">
+<label for="nomeJogador">nome do tripulante</label>
+<input id="nomeJogador" name="nomeJogador" type="text" maxlength="18" placeholder="VIAJANTE" autocomplete="off">
+<div class="skin-picker" aria-label="Escolha a aparência do tripulante">
+<span class="skin-picker-title">escolha sua aparência</span>
+<div class="skin-selector">
+<button type="button" class="skin-arrow" id="skin-prev" aria-label="Aparência anterior">‹</button>
+<div class="skin-preview-frame">
+<img id="skin-preview" class="skin-preview" src="./acabate.png" alt="Prévia da aparência selecionada">
+<span class="skin-spark skin-spark-one">✦</span>
+<span class="skin-spark skin-spark-two">✧</span>
+</div>
+<button type="button" class="skin-arrow" id="skin-next" aria-label="Próxima aparência">›</button>
+</div>
+<div class="skin-picker-caption">
+<span id="skin-display-name">Viajante Solar</span>
+<span id="skin-counter">01 / 03</span>
+</div>
+<div class="skin-dots" id="skin-dots" aria-label="Aparências disponíveis">
+<span class="skin-dot active"></span><span class="skin-dot"></span><span class="skin-dot"></span>
+</div>
+</div>
+<button type="submit" class="menu-link play-button">- iniciar missão -</button>
+</form>
+</div>
+<div class="menu-right">
+<div class="hourglass">
+<div class="hourglass-top"></div>
+<div class="hourglass-bottom"></div>
+</div>
+</div>
+</div>
+</section>
+<section id="screen-game" class="screen">
+<header class="hud-top">
+<button type="button" class="menu-link" id="btn-abortar" style="font-size: 0.9rem;">← abortar</button>
+<div id="checklist-visual">Checklist: ■ ■ ■ ■ ■</div>
+<button type="button" id="btn-abrir-livro" class="menu-link" style="font-size: 1rem; color: var(--cor-laranja);">
+■ Livro Guia
+</button>
+</header>
+<div class="game-world" id="game-world">
+<div class="astronaut-sprite" id="player-sprite"><img class="game-skin-image" alt="Tripulante"></div>
+</div>
+<div class="interact-prompt" id="interact-prompt" role="status" aria-live="polite"></div>
+<div class="modal-overlay" id="modal-livro">
+<div class="modal-box">
+<h2>■ Guia de Sobrevivência</h2>
+<p style="margin-bottom: 15px; color: var(--cor-marrom-cinza);">
+Este livro pertence a: <strong id="book-owner-name" style="color: var(--cor-texto-claro);">VIAJANTE</strong>
+</p>
+<div id="lista-paginas-livro"></div>
+<button type="button" id="btn-fechar-livro" class="menu-link" style="margin-top: 20px; width: 100%;">
+[ fechar livro e explorar ]
+</button>
+</div>
+</div>
+<div class="modal-overlay" id="modal-quiz">
+<div class="modal-box">
+<h3 id="quiz-item-title">Objeto</h3>
+<p id="quiz-question-text" style="margin-bottom: 12px; color: var(--cor-laranja);"></p>
+<div class="quiz-options" id="quiz-options-container"></div>
+<p id="feedback-msg"></p>
+<button type="button" id="btn-confirmar-coleta" class="menu-link" style="margin-top: 15px; width: 100%;">
+[ confirmar resposta ]
+</button>
+</div>
+</div>
+</section>
+<section id="screen-ship" class="screen">
+<div class="ship-layout">
+<header class="phase-heading">
+<span>FASE 2 · PREPARAÇÃO</span>
+<h1>Decolagem</h1>
+<p>Prepare os sistemas e coloque a nave em órbita.</p>
+</header>
+<section class="ship-panel" id="ship-cables">
+<div class="ship-panel-heading">
+<div>
+<span class="mission-number">MISSÃO 1</span>
+<h2>Conectar cabos</h2>
+</div>
+<strong id="cable-timer" class="mission-timer">20s</strong>
+</div>
+<p id="cable-status" class="mission-status" aria-live="polite">Selecione um símbolo à esquerda e encontre o mesmo símbolo à direita.</p>
+<div class="cable-board">
+<div class="cable-side">
+<h3>1. CABOS</h3>
+<div id="cable-list" class="cable-column" aria-label="Cabos"></div>
+</div>
+<div class="cable-board-bridge" aria-hidden="true">■</div>
+<div class="cable-side">
+<h3>2. CONECTORES</h3>
+<div id="connector-list" class="cable-column" aria-label="Conectores"></div>
+</div>
+</div>
+<p class="mission-hint">Duas conexões erradas encerram a missão.</p>
+</section>
+<section class="ship-panel" id="ship-sequence" hidden>
+<div class="ship-panel-heading">
+<div>
+<span class="mission-number">MISSÃO 2</span>
+<h2>Sequência de ignição</h2>
+</div>
+<strong id="sequence-timer" class="mission-timer">8s</strong>
+</div>
+<p class="mission-status">Repita a sequência usando as teclas do teclado.</p>
+<div id="sequence-keys" class="sequence-keys" aria-label="Sequência de ignição"></div>
+<p id="sequence-status" class="mission-status" aria-live="polite">Aguardando sequência...</p>
+<p class="mission-hint">Você tem 8 segundos. Uma tecla errada falha a ignição.</p>
+</section>
+<section id="ship-result" class="ship-result" aria-live="polite" hidden>
+<div class="result-icon" id="ship-result-icon">■</div>
+<h2 id="ship-result-title"></h2>
+<p id="ship-result-message"></p>
+<div class="result-actions">
+<button type="button" class="menu-link" id="btn-retry-launch">[ tentar decolagem novamente ]</button>
+<button type="button" class="menu-link play-button" id="btn-land-mars" hidden>[ pousar em Marte ]</button>
+</div>
+</section>
+</div>
+</section>
+<section id="screen-mars" class="screen mars-screen">
+<header class="hud-top mars-hud">
+<div><strong>MARTE</strong><span id="mars-objectives">Investigue 3 pontos no planeta.</span></div>
+<div id="mars-inventory" class="mars-inventory" aria-label="Itens da missão"></div>
+</header>
+<div class="mars-world" id="mars-world">
+<span class="mars-rock rock-one" aria-hidden="true">◆</span>
+<span class="mars-rock rock-two" aria-hidden="true">▲</span>
+<span class="mars-rock rock-three" aria-hidden="true">◆</span>
+<span class="mars-rock rock-four" aria-hidden="true">▲</span>
+<span class="mars-rock rock-five" aria-hidden="true">◆</span>
+<div class="astronaut-sprite mars-astronaut" id="mars-player-sprite"><img class="game-skin-image" alt="Tripulante"></div>
+</div>
+<div class="mars-feedback" id="mars-feedback" role="status" aria-live="polite">Uma nova paisagem se estende diante de você.</div>
+<div class="interact-prompt mars-prompt" id="mars-prompt" role="status" aria-live="polite"></div>
+</section>
+<section id="screen-win" class="screen">
+<div class="menu-container win-container">
+<div class="win-panel">
+<div class="win-badge">✦ missão concluída ✦</div>
+<div class="win-tag">Tripulante</div>
+<h1 id="win-name" class="win-name">VIAJANTE</h1>
+<p class="win-summary">O encontro com ZibZab foi registrado. Estes são os selos da sua expedição.</p>
+<h2 class="album-title">Álbum da expedição</h2>
+<div id="seal-album" class="seal-album"></div>
+<h2 class="album-title equipment-title">Equipamentos da missão</h2>
+<ul id="win-items" class="win-items"></ul>
+<div class="win-actions">
+<button type="button" id="btn-nova-missao" class="menu-link play-button">- nova missão -</button>
+<a href="#menu" class="menu-link">- voltar ao início -</a>
+</div>
+</div>
+</div>
+</section>
+</main>
+<script>
+const todosItens = [
+{
+id: 'comida', nome: 'Comida de Astronauta', icon: '🍕',
+livro: `As porções são desidratadas e embaladas para permanecer próprias para consumo durante a viagem de cerca de sete meses. Antes de comer, a tripulação
+reidrata cada porção com água medida; manter a embalagem fechada evita contaminação e desperdício.`,
+q: 'A viagem está na metade e uma refeição será preparada dentro da nave. Qual procedimento conserva o estoque e mantém a comida própria para consumo?',
+respostas: [
+{ texto: 'Abrir todas as porções de uma vez e deixá-las expostas para a tripulação escolher depois.', correta: false },
+{ texto: 'Reidratar apenas a porção da refeição com a quantidade de água indicada e manter as outras embalagens fechadas.', correta: true },
+{ texto: 'Usar a água do reservatório para lavar as embalagens e comer o alimento ainda desidratado.', correta: false }
+]
+},
+{
+id: 'mapa', nome: 'Mapa Marciano', icon: '🗺️',
+livro: `O mapa marca crateras, campos de rochas e trechos de solo firme. Ele também registra pontos de referência que continuam visíveis quando a poeira reduz a
+visibilidade; comparar esses marcos ajuda a escolher uma rota segura.`,
+q: 'Uma tempestade cobre parte do horizonte e o caminho direto atravessa uma área de rochas. Como a equipe deve usar o mapa para continuar a exploração?',
+respostas: [
+{ texto: 'Comparar os pontos de referência registrados e escolher um desvio por solo firme, evitando a área de rochas.', correta: true },
+{ texto: 'Seguir em linha reta pela área de rochas, usando o rádio para confirmar a posição a cada passo.', correta: false },
+{ texto: 'Guardar o mapa até a tempestade passar, pois ele só serve para marcar a posição da nave.', correta: false }
+]
+},
+{
+id: 'mp3', nome: 'MP3 Player', icon: '🎧',
+livro: `O aparelho guarda músicas e mensagens de áudio sem depender de conexão com a Terra. A viagem longa pode ser cansativa, então a tripulação usa as gravações
+para descansar e manter uma rotina; o aparelho não substitui o rádio de comunicação.`,
+q: `Durante uma viagem sem conexão com a Terra, uma pessoa quer ouvir uma mensagem gravada para relaxar. Qual equipamento atende a essa necessidade sem ocupar o
+canal de comunicação da nave?`,
+respostas: [
+{ texto: 'O rádio, porque mensagens pessoais devem ser transmitidas pela frequência da base.', correta: false },
+{ texto: 'O MP3 Player, que reproduz gravações armazenadas e ajuda a passar o tempo da viagem.', correta: true },
+{ texto: 'O mapa, porque seus pontos de referência também armazenam arquivos de áudio.', correta: false }
+]
+},
+{
+id: 'traje', nome: 'Traje Espacial', icon: '🧥',
+livro: `A superfície marciana pode chegar a cerca de -60°C e a atmosfera não oferece oxigênio respirável. O traje mantém o astronauta aquecido, fornece oxigênio e
+ajuda a proteger o corpo durante atividades fora da nave.`,
+q: `Antes de sair para coletar uma amostra, a equipe percebe que o astronauta está sem o traje pressurizado. Qual risco torna a saída insegura mesmo que a
+caminhada seja curta?`,
+respostas: [
+{ texto: 'O frio extremo e a falta de oxigênio respirável na atmosfera de Marte.', correta: true },
+{ texto: 'A poeira pode apagar as marcações do mapa e impedir que a nave encontre o caminho de volta.', correta: false },
+{ texto: 'A gravidade marciana é maior que a terrestre e pode prender o astronauta ao solo.', correta: false }
+]
+},
+{
+id: 'ferramentas', nome: 'Maleta de Ferramentas', icon: '🔧',
+livro: `A maleta reúne ferramentas para pequenos reparos e para remover poeira acumulada nos equipamentos externos. Painéis solares cobertos produzem menos
+energia, por isso uma limpeza cuidadosa pode ajudar a manter sistemas essenciais funcionando.`,
+q: `Depois de uma tempestade, a geração de energia caiu e a inspeção encontrou poeira nos painéis. Qual ação combina com o uso da maleta e ajuda a recuperar o
+sistema?`,
+respostas: [
+{ texto: 'Limpar a poeira dos painéis com as ferramentas apropriadas e verificar se há alguma peça solta.', correta: true },
+{ texto: 'Desmontar o rádio para usar suas peças como filtro e deixar os painéis cobertos.', correta: false },
+{ texto: 'Usar o mapa para raspar os painéis e empilhar as ferramentas sobre as células solares.', correta: false }
+]
+},
+{
+id: 'primeiros_socorros', nome: 'Kit de Primeiros Socorros', icon: '🩹',
+livro: `O kit contém materiais para cuidar de cortes, arranhões e outros ferimentos leves durante a exploração. Ele permite prestar os primeiros cuidados enquanto
+a equipe avalia se é necessário retornar à nave ou pedir orientação à base.`,
+q: 'Uma pessoa sofre um corte leve ao passar por uma rocha. Qual é a resposta mais adequada antes de a equipe decidir se continua a caminhada?',
+respostas: [
+{ texto: 'Usar o kit para limpar e proteger o ferimento, observar a condição da pessoa e comunicar a equipe.', correta: true },
+{ texto: 'Aplicar uma amostra do solo sobre o corte para descobrir se a rocha contém ferro.', correta: false },
+{ texto: 'Guardar o kit para uma emergência maior e continuar sem avaliar o ferimento.', correta: false }
+]
+},
+{
+id: 'radio', nome: 'Rádio Comunicador', icon: '📻',
+livro: `O rádio mantém a tripulação em contato com a base terrestre e permite compartilhar posição, condições do equipamento e pedidos de orientação. As mensagens
+podem levar um tempo para chegar devido à distância entre Marte e a Terra.`,
+q: `A equipe encontra uma falha que não consegue diagnosticar e precisa informar a base sobre a situação. O que deve fazer, considerando que a resposta pode
+demorar?`,
+respostas: [
+{ texto: 'Transmitir pelo rádio a posição e os dados da falha, e aguardar levando em conta o atraso da comunicação.', correta: true },
+{ texto: 'Usar o MP3 para enviar a mensagem instantaneamente, já que ele não depende da distância.', correta: false },
+{ texto: 'Esperar que o mapa envie automaticamente um alerta para a Terra quando a rota mudar.', correta: false }
+]
+},
+{
+id: 'experimentos', nome: 'Kit de Experimentos', icon: '🧪',
+livro: `O kit permite recolher e analisar amostras do solo, observando minerais e possíveis sinais de organismos antigos. Para que a análise seja confiável, cada
+amostra deve ser identificada e mantida separada das demais.`,
+q: 'Você encontra uma camada de solo diferente perto de uma cratera e quer comparar sua composição com a de outro local. Como o kit deve ser usado?',
+respostas: [
+{ texto: 'Coletar amostras identificadas de cada local e analisá-las separadamente para comparar os resultados.', correta: true },
+{ texto: 'Misturar todo o solo em um recipiente e registrar apenas a cor mais comum da mistura.', correta: false },
+{ texto: 'Usar o kit para limpar a viseira e deixar a coleta para quando a nave estiver em órbita.', correta: false }
+]
+},
+{
+id: 'rover', nome: 'Rover Explorador', icon: '🚙',
+livro: `O Rover transporta a tripulação e os equipamentos por terrenos extensos e irregulares. Suas rodas ajudam a atravessar áreas que seriam cansativas ou
+arriscadas a pé, mas a rota ainda precisa evitar crateras e rochas instáveis.`,
+q: 'Um ponto de pesquisa fica longe da nave e o terreno entre eles tem pedras afiadas. Qual plano aproveita o Rover sem ignorar os perigos do caminho?',
+respostas: [
+{ texto: 'Traçar uma rota segura no mapa e usar o Rover para levar a equipe e os equipamentos até o ponto.', correta: true },
+{ texto: 'Dirigir diretamente sobre as pedras para chegar mais rápido, dispensando o mapa e os equipamentos.', correta: false },
+{ texto: 'Deixar o Rover parado e carregar todo o equipamento a pé para evitar gastar energia.', correta: false }
+]
+},
+{
+id: 'bolsa_aventura', nome: 'Bolsa de Aventura', icon: '🎒',
+livro: `A bolsa organiza ferramentas, amostras e suprimentos para que a tripulação transporte o necessário durante uma saída. Separar os objetos por função
+facilita encontrar cada item sem espalhar o equipamento pelo terreno.`,
+q: 'A equipe vai investigar dois locais antes de voltar à nave. Como a bolsa ajuda a tornar essa saída mais organizada?',
+respostas: [
+{ texto: 'Guardar os suprimentos e separar as ferramentas das amostras para encontrá-los durante o percurso.', correta: true },
+{ texto: 'Usar a bolsa como substituta do traje, colocando o oxigênio dentro dela para respirar.', correta: false },
+{ texto: 'Deixar os equipamentos espalhados no primeiro ponto para reduzir o peso na volta.', correta: false }
+]
+},
+{
+id: 'camera', nome: 'Câmera de Fotos', icon: '📷',
+livro: `A câmera registra imagens de formações, marcas e mudanças na superfície. As fotos ajudam a equipe a comparar locais e compartilhar evidências com a base,
+mas não substituem a coleta física quando uma amostra é necessária.`,
+q: 'Durante a exploração, você encontra uma marca que pode ser importante, mas não sabe se é natural. Qual registro ajuda a equipe a analisá-la depois?',
+respostas: [
+{ texto: 'Fotografar a marca e seu entorno antes de tocar no local, preservando o contexto da descoberta.', correta: true },
+{ texto: 'Apagar as marcas do mapa para que a base não confunda a formação com uma rota.', correta: false },
+{ texto: 'Usar a câmera para recolher fisicamente a marca e guardar tudo na bolsa.', correta: false }
+]
+},
+{
+id: 'reciclador_agua', nome: 'Reciclador de Água', icon: '💧',
+livro: `O reciclador filtra água recuperada da umidade do ar e de resíduos líquidos da rotina da tripulação. A água tratada pode voltar ao reservatório de uso,
+reduzindo a dependência dos estoques levados da Terra; ela deve passar pelo ciclo de filtragem antes de ser consumida.`,
+q: 'O estoque de água limpa está baixando, mas os filtros ainda funcionam. Qual decisão reduz o consumo das reservas sem colocar a tripulação em risco?',
+respostas: [
+{ texto: 'Processar a água recuperada pelo reciclador e usar somente a água que passou pela filtragem.', correta: true },
+{ texto: 'Beber qualquer líquido recuperado diretamente e desligar o sistema para poupar energia.', correta: false },
+{ texto: 'Usar a água armazenada para limpar os painéis e esperar a próxima carga enviada da Terra.', correta: false }
+]
+},
+{
+id: 'carregador_solar', nome: 'Carregador Solar', icon: '☀️',
+livro: `O carregador converte a luz solar em energia para dispositivos portáteis. A poeira reduz a quantidade de luz que chega às células, então o painel precisa
+ser posicionado em uma área exposta e mantido limpo para funcionar melhor.`,
+q: 'Um equipamento portátil está quase sem carga após uma tempestade de poeira. Qual sequência favorece a recarga usando o carregador?',
+respostas: [
+{ texto: 'Limpar a superfície do painel e posicioná-lo onde receba luz solar sem bloqueios.', correta: true },
+{ texto: 'Cobrir o painel para protegê-lo da luz e conectar o rádio no lugar do dispositivo.', correta: false },
+{ texto: 'Enterrar o carregador perto da nave para evitar que o vento leve a energia acumulada.', correta: false }
+]
+},
+{
+id: 'sinalizador', nome: 'Sinalizador de Emergência', icon: '🚨',
+livro: `O sinalizador transmite um alerta de localização quando a equipe precisa ser encontrada ou quando o rádio principal falha. Ele deve ser ativado em uma
+emergência, pois sua bateria é limitada e o sinal pode levar tempo para alcançar a base.`,
+q: 'A equipe se afastou da rota e o rádio principal parou de responder. Qual uso do sinalizador aumenta a chance de ser localizada sem desperdiçar seu recurso?',
+respostas: [
+{ texto: 'Ativá-lo como alerta de emergência e manter a equipe próxima à posição transmitida.', correta: true },
+{ texto: 'Ligá-lo durante toda a missão como iluminação e continuar mudando de lugar.', correta: false },
+{ texto: 'Usá-lo para recarregar o rádio e aguardar que ele desenhe uma nova rota no mapa.', correta: false }
+]
+},
+{
+id: 'manta_termica', nome: 'Manta Térmica', icon: '🛌',
+livro: `A manta térmica ajuda a reduzir a perda de calor durante períodos de descanso ou espera. Ela complementa a proteção do traje, mas não substitui o traje
+espacial nem fornece oxigênio para uma caminhada fora da nave.`,
+q: `A tripulação precisa aguardar uma janela segura para sair, e um astronauta está perdendo calor durante o descanso. Qual equipamento oferece apoio sem
+substituir a proteção principal?`,
+respostas: [
+{ texto: 'A manta térmica, usada como camada adicional enquanto o traje continua sendo a proteção essencial.', correta: true },
+{ texto: 'A bolsa de aventura, que mantém oxigênio circulando e substitui o traje durante a espera.', correta: false },
+{ texto: 'O carregador solar, colocado sobre o corpo para fornecer calor e ar respirável.', correta: false }
+]
+},
+{
+id: 'tubos_amostra', nome: 'Tubos de Amostra', icon: '🧫',
+livro: `Os tubos armazenam pequenas porções de solo ou gelo coletadas em pontos diferentes. Fechar e identificar cada tubo impede que as amostras se misturem e
+permite que a equipe saiba exatamente onde cada material foi encontrado.`,
+q: 'Você recolheu gelo de uma cratera e solo de uma planície para uma comparação posterior. Como evitar que a análise perca a origem de cada material?',
+respostas: [
+{ texto: 'Guardar cada material em um tubo separado, fechado e identificado com o local de coleta.', correta: true },
+{ texto: 'Colocar os dois materiais no mesmo tubo e anotar apenas que vieram de Marte.', correta: false },
+{ texto: 'Deixar os tubos abertos dentro da bolsa para que a umidade indique a origem das amostras.', correta: false }
+]
+},
+{
+id: 'bateria_reserva', nome: 'Bateria Reserva', icon: '🔋',
+livro: `A bateria reserva mantém equipamentos essenciais funcionando quando a energia solar cai ou um dispositivo fica sem carga. Como a capacidade é limitada, a
+equipe deve priorizar comunicações e instrumentos necessários para concluir a missão.`,
+q: `Uma tempestade reduziu a energia e restou uma bateria reserva. O rádio e um aparelho de entretenimento estão descarregados. Qual prioridade protege melhor a
+missão?`,
+respostas: [
+{ texto: 'Reservar a carga para o rádio e outros equipamentos essenciais, deixando o entretenimento para depois.', correta: true },
+{ texto: 'Usar toda a bateria no MP3 para manter a rotina e esperar que a nave recarregue o rádio.', correta: false },
+{ texto: 'Dividir a bateria sem verificar a necessidade de cada equipamento ou a duração da tempestade.', correta: false }
+]
+},
+{
+id: 'oculos_poeira', nome: 'Óculos de Proteção', icon: '🥽',
+livro: `Os óculos protegem os olhos de partículas levantadas pelo vento e ajudam a manter a visão durante a exploração. Eles complementam o capacete e a viseira;
+não substituem a vedação nem os sistemas de suporte do traje.`,
+q: 'O vento começa a levantar poeira fina enquanto a equipe inspeciona o terreno. Que proteção deve ser usada sem abrir mão dos demais sistemas do traje?',
+respostas: [
+{ texto: 'Os óculos de proteção para reduzir o contato da poeira com os olhos, mantendo o capacete e a viseira fechados.', correta: true },
+{ texto: 'O mapa sobre o rosto, pois as marcações filtram partículas e substituem a vedação do capacete.', correta: false },
+{ texto: 'A câmera diante dos olhos, usando a lente como substituta da viseira durante a tempestade.', correta: false }
+]
+},
+{
+id: 'antena_portatil', nome: 'Antena Portátil', icon: '📡',
+livro: `A antena portátil melhora o alcance do rádio quando obstáculos ou a posição da equipe dificultam a comunicação. Ela precisa ser apontada e instalada em um
+local desobstruído; mesmo com sinal melhor, a distância ainda causa atraso nas mensagens.`,
+q: 'Uma encosta está bloqueando parte do sinal durante o contato com a Terra. Como combinar a antena portátil e o rádio para tentar melhorar a comunicação?',
+respostas: [
+{ texto: 'Instalar a antena em um ponto desobstruído, direcioná-la para a base e transmitir pelo rádio.', correta: true },
+{ texto: 'Enterrar a antena junto ao Rover e usar o MP3 para contornar o atraso entre os planetas.', correta: false },
+{ texto: 'Apontar a antena para o solo e desligar o rádio para que o sinal atravesse a encosta.', correta: false }
+]
+},
+{
+id: 'remendo_traje', nome: 'Kit de Remendo do Traje', icon: '🩹',
+livro: `O kit permite vedar temporariamente pequenos danos na camada externa do traje até que a equipe retorne para uma inspeção completa. Um remendo é uma medida
+de emergência e não torna seguro ignorar uma falha ou continuar uma atividade longa.`,
+q: `Durante a inspeção, aparece um pequeno dano externo no traje. Qual procedimento trata o problema sem confundir uma reparação temporária com uma solução
+definitiva?`,
+respostas: [
+{ texto: 'Aplicar o remendo para conter o dano e retornar à nave para verificar o traje por completo.', correta: true },
+{ texto: 'Continuar a exploração normalmente, pois qualquer remendo transforma o traje em equipamento novo.', correta: false },
+{ texto: 'Cobrir o dano com uma amostra de solo e desligar o rádio para evitar alertas da base.', correta: false }
+]
+}
+];
+const totalRequisitados = 5;
+const screens = {
+menu: document.getElementById('screen-menu'),
+game: document.getElementById('screen-game'),
+ship: document.getElementById('screen-ship'),
+mars: document.getElementById('screen-mars'),
+win: document.getElementById('screen-win')
+};
+const playerForm = document.getElementById('player-form');
+const inputNome = document.getElementById('nomeJogador');
+const checklistVisual = document.getElementById('checklist-visual');
+const playerSprite = document.getElementById('player-sprite');
+const gameWorld = document.getElementById('game-world');
+const interactPrompt = document.getElementById('interact-prompt');
+const bookOwnerName = document.getElementById('book-owner-name');
+const listaLivro = document.getElementById('lista-paginas-livro');
+const modalLivro = document.getElementById('modal-livro');
+const modalQuiz = document.getElementById('modal-quiz');
+const quizTitle = document.getElementById('quiz-item-title');
+const quizQuestionText = document.getElementById('quiz-question-text');
+const quizOptions = document.getElementById('quiz-options-container');
+const feedbackMsg = document.getElementById('feedback-msg');
+const btnConfirmar = document.getElementById('btn-confirmar-coleta');
+const btnAbrirLivro = document.getElementById('btn-abrir-livro');
+const btnFecharLivro = document.getElementById('btn-fechar-livro');
+const btnAbortar = document.getElementById('btn-abortar');
+const btnNovaMissao = document.getElementById('btn-nova-missao');
+const winName = document.getElementById('win-name');
+const winItems = document.getElementById('win-items');
+const sealAlbum = document.getElementById('seal-album');
+const cableScreen = document.getElementById('ship-cables');
+const sequenceScreen = document.getElementById('ship-sequence');
+const shipResult = document.getElementById('ship-result');
+const cableList = document.getElementById('cable-list');
+const connectorList = document.getElementById('connector-list');
+const cableStatus = document.getElementById('cable-status');
+const cableTimer = document.getElementById('cable-timer');
+const sequenceTimer = document.getElementById('sequence-timer');
+const sequenceKeys = document.getElementById('sequence-keys');
+const sequenceStatus = document.getElementById('sequence-status');
+const shipResultIcon = document.getElementById('ship-result-icon');
+const shipResultTitle = document.getElementById('ship-result-title');
+const shipResultMessage = document.getElementById('ship-result-message');
+const btnRetryLaunch = document.getElementById('btn-retry-launch');
+const btnLandMars = document.getElementById('btn-land-mars');
+const marsWorld = document.getElementById('mars-world');
+const marsPlayerSprite = document.getElementById('mars-player-sprite');
+const marsPrompt = document.getElementById('mars-prompt');
+const marsFeedback = document.getElementById('mars-feedback');
+const marsObjectives = document.getElementById('mars-objectives');
+const marsInventory = document.getElementById('mars-inventory');
+const skinPreview = document.getElementById('skin-preview');
+const skinDisplayName = document.getElementById('skin-display-name');
+const skinCounter = document.getElementById('skin-counter');
+const skinDots = document.getElementById('skin-dots');
+const skinPrev = document.getElementById('skin-prev');
+const skinNext = document.getElementById('skin-next');
+// Os nomes exibidos são apelidos visuais; os nomes dos arquivos ficam ocultos.
+const skins = [
+{ file: './acabate.png', label: '' },
+{ file: './cogumelo.png', label: '' },
+{ file: './azul.png', label: '' }
+];
+let skinSelecionada = Math.max(0, skins.findIndex((skin) => skin.file === localStorage.getItem('skinJogador')));
+let itensMissao = [];
+let itensColetados = JSON.parse(localStorage.getItem('itensColetados') || '[]');
+let posPlayer = { x: 50, y: 50 };
+let currentTargetId = null;
+let itemEmFoco = null;
+const VELOCIDADE = 0.32;
+const teclasPressionadas = new Set();
+const cabos = [
+{ id: 'laranja', simbolo: '●', cor: 'var(--cor-laranja)' },
+{ id: 'telha', simbolo: '■', cor: 'var(--cor-vermelho-telha)' },
+{ id: 'azul', simbolo: '▲', cor: 'var(--cor-azul-cinzento)' },
+{ id: 'branco', simbolo: '◆', cor: 'var(--cor-texto-claro)' }
+];
+const teclasIgnicao = [
+{ code: 'KeyW', label: 'W' },
+{ code: 'KeyA', label: 'A' },
+{ code: 'KeyS', label: 'S' },
+{ code: 'KeyD', label: 'D' },
+{ code: 'Space', label: 'ESPAÇO' }
+];
+const selosDaExpedicao = [
+{ id: 'laboratorio', titulo: 'Laboratório', imagem: '■', descricao: 'Suprimentos reunidos no Overworld.' },
+{ id: 'decolagem', titulo: 'Decolagem Perfeita', imagem: '■', descricao: 'Sistemas conectados e ignição concluída.' },
+{ id: 'zibzab', titulo: 'Encontro com ZibZab', imagem: '■', descricao: 'Primeiro contato registrado em Marte.' }
+];
+const pontosMarte = [
+{ id: 'cratera', nome: 'Cratera de gelo antigo', icon: '■', x: 24, y: 32, descoberta: 'Gelo preservado por eras revela que Marte já teve água líquida.' },
+{ id: 'rocha', nome: 'Rocha de ferro brilhante', icon: '■', x: 70, y: 48, descoberta: 'O brilho metálico confirma a presença de minerais ricos em ferro.' },
+{ id: 'pegada', nome: 'Pegada estranha', icon: '■', x: 42, y: 76, descoberta: 'A marca não pertence ao traje nem ao Rover. Alguém esteve aqui.' }
+];
+let selosConquistados = [];
+let caboSelecionado = null;
+let cabosConectados = new Set();
+let conectoresEmbaralhados = [];
+let errosCabos = 0;
+let sequenciaAtual = [];
+let indiceSequencia = 0;
+let sequenciaAtiva = false;
+let timerNave = null;
+let segundosNave = 0;
+let pontosInvestigados = new Set();
+let alvoMarteId = null;
+const posicoesItensMissao = [
+{ x: 18, y: 26 },
+{ x: 82, y: 26 },
+{ x: 14, y: 74 },
+{ x: 50, y: 74 },
+{ x: 86, y: 74 }
+];
+let objectPositions = {};
+function aplicarSkin(elemento) {
+const imagem = elemento.querySelector('.game-skin-image');
+if (imagem) imagem.src = skins[skinSelecionada].file;
+}
+function atualizarSeletorSkin() {
+const skin = skins[skinSelecionada];
+skinPreview.src = skin.file;
+skinPreview.alt = `Prévia: ${skin.label}`;
+skinDisplayName.textContent = skin.label;
+skinCounter.textContent = `${String(skinSelecionada + 1).padStart(2, '0')} / 03`;
+[...skinDots.children].forEach((dot, indice) => dot.classList.toggle('active', indice === skinSelecionada));
+localStorage.setItem('skinJogador', skin.file);
+aplicarSkin(playerSprite);
+aplicarSkin(marsPlayerSprite);
+}
+function mudarSkin(direcao) {
+skinSelecionada = (skinSelecionada + direcao + skins.length) % skins.length;
+atualizarSeletorSkin();
+}
+skinPrev.addEventListener('click', () => mudarSkin(-1));
+skinNext.addEventListener('click', () => mudarSkin(1));
+atualizarSeletorSkin();
+function showScreen(name) {
+teclasPressionadas.clear();
+Object.entries(screens).forEach(([key, el]) => {
+el.classList.toggle('active', key === name);
+});
+}
+function getNomeJogador() {
+return (localStorage.getItem('nomeJogador') || 'VIAJANTE').toUpperCase();
+}
+function openLivro() {
+teclasPressionadas.clear();
+modalLivro.classList.add('open');
+modalQuiz.classList.remove('open');
+}
+function closeLivro() {
+modalLivro.classList.remove('open');
+}
+function atualizarChecklist() {
+const bolinhas = [];
+for (let i = 0; i < totalRequisitados; i++) {
+bolinhas.push(i < itensColetados.length ? '■' : '■');
+}
+checklistVisual.textContent = `Checklist: ${bolinhas.join(' ')}`;
+}
+function renderPlayer() {
+aplicarSkin(playerSprite);
+playerSprite.style.left = `${posPlayer.x}%`;
+playerSprite.style.top = `${posPlayer.y}%`;
+updateTargetProximity();
+}
+function renderPlayerMarte() {
+aplicarSkin(marsPlayerSprite);
+marsPlayerSprite.style.left = `${posPlayer.x}%`;
+marsPlayerSprite.style.top = `${posPlayer.y}%`;
+updateMarsTargetProximity();
+}
+function renderMapObjects() {
+if (!gameWorld) return;
+gameWorld.querySelectorAll('.map-item').forEach((node) => node.remove());
+itensMissao.forEach((item) => {
+if (itensColetados.includes(item.id)) return;
+const pos = objectPositions[item.id] || { x: 50, y: 50 };
+const marker = document.createElement('div');
+marker.className = 'map-item';
+if (currentTargetId === item.id) {
+marker.classList.add('perto');
+}
+marker.dataset.itemId = item.id;
+marker.textContent = item.icon;
+marker.style.left = `${pos.x}%`;
+marker.style.top = `${pos.y}%`;
+marker.title = item.nome;
+gameWorld.appendChild(marker);
+});
+}
+function updateTargetProximity() {
+let nearestId = null;
+let nearestDistance = Infinity;
+itensMissao.forEach((item) => {
+if (itensColetados.includes(item.id)) return;
+const pos = objectPositions[item.id] || { x: 50, y: 50 };
+const distance = Math.hypot(posPlayer.x - pos.x, posPlayer.y - pos.y);
+if (distance < 7 && distance < nearestDistance) {
+nearestId = item.id;
+nearestDistance = distance;
+}
+});
+const alvoMudou = nearestId !== currentTargetId;
+currentTargetId = nearestId;
+if (alvoMudou) {
+gameWorld.querySelectorAll('.map-item').forEach((marker) => {
+marker.classList.toggle('perto', marker.dataset.itemId === currentTargetId);
+});
+}
+const item = itensMissao.find((missaoItem) => missaoItem.id === currentTargetId);
+if (item) {
+const textoPrompt = `[ ESPAÇO ] investigar ${item.nome}`;
+if (interactPrompt.textContent !== textoPrompt) interactPrompt.textContent = textoPrompt;
+if (!interactPrompt.classList.contains('visible')) interactPrompt.classList.add('visible');
+} else if (interactPrompt.classList.contains('visible')) {
+interactPrompt.classList.remove('visible');
+}
+}
+function registrarSelo(id) {
+if (!selosConquistados.includes(id)) selosConquistados.push(id);
+}
+function embaralhar(lista) {
+const resultado = [...lista];
+for (let indice = resultado.length - 1; indice > 0; indice--) {
+const aleatorio = Math.floor(Math.random() * (indice + 1));
+[resultado[indice], resultado[aleatorio]] = [resultado[aleatorio], resultado[indice]];
+}
+return resultado;
+}
+function limparTimerNave() {
+if (timerNave) clearInterval(timerNave);
+timerNave = null;
+}
+function iniciarTimerNave(segundos, elemento, aoTerminar) {
+limparTimerNave();
+segundosNave = segundos;
+elemento.textContent = `${segundosNave}s`;
+timerNave = setInterval(() => {
+segundosNave -= 1;
+elemento.textContent = `${segundosNave}s`;
+if (segundosNave <= 0) {
+limparTimerNave();
+aoTerminar();
+}
+}, 1000);
+}
+function renderizarCabos() {
+cableList.innerHTML = '';
+connectorList.innerHTML = '';
+cabos.forEach((cabo) => {
+const botao = document.createElement('button');
+botao.type = 'button';
+botao.className = 'cable-button';
+botao.style.setProperty('--cable-color', cabo.cor);
+botao.textContent = cabosConectados.has(cabo.id) ? `${cabo.simbolo} ✓` : cabo.simbolo;
+botao.setAttribute('aria-label', `Cabo símbolo ${cabo.simbolo}`);
+botao.title = `Cabo ${cabo.simbolo}`;
+botao.disabled = cabosConectados.has(cabo.id);
+botao.classList.toggle('selected', caboSelecionado === cabo.id);
+botao.classList.toggle('connected', cabosConectados.has(cabo.id));
+botao.addEventListener('click', () => {
+caboSelecionado = cabo.id;
+cableStatus.textContent = `Símbolo ${cabo.simbolo} selecionado. Agora escolha o mesmo símbolo na coluna da direita.`;
+renderizarCabos();
+});
+cableList.appendChild(botao);
+});
+conectoresEmbaralhados.forEach((conector) => {
+const botao = document.createElement('button');
+botao.type = 'button';
+botao.className = 'cable-button connector-button';
+botao.style.setProperty('--cable-color', conector.cor);
+botao.textContent = cabosConectados.has(conector.id) ? `${conector.simbolo} ✓` : conector.simbolo;
+botao.setAttribute('aria-label', `Conector símbolo ${conector.simbolo}`);
+botao.title = `Conector ${conector.simbolo}`;
+botao.disabled = cabosConectados.has(conector.id);
+botao.classList.toggle('connected', cabosConectados.has(conector.id));
+botao.addEventListener('click', () => conectarCabo(conector.id));
+connectorList.appendChild(botao);
+});
+}
+function conectarCabo(idConector) {
+if (!caboSelecionado) {
+cableStatus.textContent = 'Primeiro selecione um símbolo na coluna da esquerda.';
+return;
+}
+if (caboSelecionado === idConector) {
+cabosConectados.add(idConector);
+caboSelecionado = null;
+cableStatus.textContent = `Conexão certa: ${cabosConectados.size} de ${cabos.length}. Os símbolos ligados ficam marcados com ✓.`;
+renderizarCabos();
+if (cabosConectados.size === cabos.length) iniciarSequenciaIgnicao();
+return;
+}
+errosCabos += 1;
+caboSelecionado = null;
+if (errosCabos >= 2) {
+mostrarResultadoNave('falha-total');
+return;
+}
+cableStatus.textContent = `Os símbolos não combinam (${errosCabos}/2 erros). Selecione outro conector.`;
+renderizarCabos();
+}
+function iniciarNave() {
+limparTimerNave();
+showScreen('ship');
+caboSelecionado = null;
+cabosConectados = new Set();
+conectoresEmbaralhados = embaralhar(cabos);
+if (conectoresEmbaralhados.every((conector, indice) => conector.id === cabos[indice].id)) {
+conectoresEmbaralhados.push(conectoresEmbaralhados.shift());
+}
+errosCabos = 0;
+sequenciaAtual = [];
+indiceSequencia = 0;
+sequenciaAtiva = false;
+cableScreen.hidden = false;
+sequenceScreen.hidden = true;
+shipResult.hidden = true;
+btnRetryLaunch.hidden = false;
+btnLandMars.hidden = true;
+cableStatus.textContent = 'Selecione um símbolo à esquerda e encontre o mesmo símbolo à direita.';
+renderizarCabos();
+iniciarTimerNave(20, cableTimer, () => mostrarResultadoNave('falha-total'));
+}
+function renderizarSequencia() {
+sequenceKeys.innerHTML = sequenciaAtual.map((tecla, indice) => {
+const estado = indice < indiceSequencia ? 'completed' : indice === indiceSequencia ? 'current' : '';
+return `<span class="sequence-key ${estado}">${tecla.label}</span>`;
+}).join('');
+sequenceStatus.textContent = `Teclas corretas: ${indiceSequencia} de ${sequenciaAtual.length}`;
+}
+function iniciarSequenciaIgnicao() {
+limparTimerNave();
+cableScreen.hidden = true;
+sequenceScreen.hidden = false;
+sequenciaAtual = Array.from({ length: 5 }, () => teclasIgnicao[Math.floor(Math.random() * teclasIgnicao.length)]);
+indiceSequencia = 0;
+sequenciaAtiva = true;
+renderizarSequencia();
+iniciarTimerNave(8, sequenceTimer, () => {
+sequenciaAtiva = false;
+mostrarResultadoNave('meia-boca');
+});
+}
+function processarTeclaIgnicao(event) {
+if (!sequenciaAtiva || event.repeat) return;
+event.preventDefault();
+if (event.code !== sequenciaAtual[indiceSequencia].code) {
+sequenciaAtiva = false;
+mostrarResultadoNave('meia-boca');
+return;
+}
+indiceSequencia += 1;
+if (indiceSequencia === sequenciaAtual.length) {
+sequenciaAtiva = false;
+mostrarResultadoNave('perfeito');
+return;
+}
+renderizarSequencia();
+}
+function mostrarResultadoNave(resultado) {
+limparTimerNave();
+sequenciaAtiva = false;
+cableScreen.hidden = true;
+sequenceScreen.hidden = true;
+shipResult.hidden = false;
+btnRetryLaunch.hidden = resultado === 'perfeito';
+btnLandMars.hidden = resultado !== 'perfeito';
+if (resultado === 'falha-total') {
+shipResultIcon.textContent = '■';
+shipResultTitle.textContent = 'Falha total';
+shipResultMessage.textContent = 'A nave explodiu ainda na Terra. Os cabos foram conectados incorretamente ou o tempo acabou.';
+return;
+}
+if (resultado === 'meia-boca') {
+shipResultIcon.textContent = '■■';
+shipResultTitle.textContent = 'Decolagem meia-boca';
+shipResultMessage.textContent = 'A nave ficou sem força e o astronauta acabou conhecendo Jesus no espaço. Tente outra sequência.';
+return;
+}
+registrarSelo('decolagem');
+shipResultIcon.textContent = '■';
+shipResultTitle.textContent = 'Decolagem perfeita!';
+shipResultMessage.textContent = 'Todos os sistemas responderam. A nave está pronta para pousar em Marte.';
+}
+function iniciarExploracaoMarte() {
+limparTimerNave();
+showScreen('mars');
+posPlayer = { x: 12, y: 82 };
+pontosInvestigados = new Set();
+alvoMarteId = null;
+marsFeedback.textContent = 'Uma nova paisagem se estende diante de você.';
+marsObjectives.textContent = 'Investigue 3 pontos no planeta.';
+marsInventory.innerHTML = '';
+itensColetados.forEach((id) => {
+const item = todosItens.find((obj) => obj.id === id);
+if (!item) return;
+const etiqueta = document.createElement('span');
+etiqueta.className = 'mars-inventory-item';
+etiqueta.textContent = item.icon;
+etiqueta.title = item.nome;
+marsInventory.appendChild(etiqueta);
+});
+renderizarPontosMarte();
+renderPlayerMarte();
+}
+function renderizarPontosMarte() {
+marsWorld.querySelectorAll('.mars-object').forEach((objeto) => objeto.remove());
+const alienLiberado = pontosInvestigados.size === pontosMarte.length;
+const pontosVisiveis = pontosMarte.filter((ponto) => !pontosInvestigados.has(ponto.id));
+if (alienLiberado) {
+pontosVisiveis.push({ id: 'zibzab', nome: 'ZibZab', icon: '■', x: 84, y: 24, alien: true });
+}
+pontosVisiveis.forEach((ponto) => {
+const marcador = document.createElement('div');
+marcador.className = `mars-object${ponto.alien ? ' zibzab-marker' : ''}`;
+marcador.dataset.poiId = ponto.id;
+marcador.textContent = ponto.icon;
+marcador.title = ponto.nome;
+marcador.style.left = `${ponto.x}%`;
+marcador.style.top = `${ponto.y}%`;
+if (ponto.id === alvoMarteId) marcador.classList.add('perto');
+marsWorld.appendChild(marcador);
+});
+}
+function updateMarsTargetProximity() {
+const marcadores = [...pontosMarte.filter((ponto) => !pontosInvestigados.has(ponto.id))];
+if (pontosInvestigados.size === pontosMarte.length) {
+marcadores.push({ id: 'zibzab', nome: 'ZibZab', x: 84, y: 24, alien: true });
+}
+let alvoMaisProximo = null;
+let menorDistancia = Infinity;
+marcadores.forEach((ponto) => {
+const distancia = Math.hypot(posPlayer.x - ponto.x, posPlayer.y - ponto.y);
+if (distancia < 7 && distancia < menorDistancia) {
+alvoMaisProximo = ponto;
+menorDistancia = distancia;
+}
+});
+const novoAlvoId = alvoMaisProximo ? alvoMaisProximo.id : null;
+const alvoMudou = novoAlvoId !== alvoMarteId;
+alvoMarteId = novoAlvoId;
+if (alvoMudou) {
+marsWorld.querySelectorAll('.mars-object').forEach((marcador) => {
+marcador.classList.toggle('perto', marcador.dataset.poiId === alvoMarteId);
+});
+}
+if (!alvoMaisProximo) {
+if (marsPrompt.classList.contains('visible')) marsPrompt.classList.remove('visible');
+} else if (alvoMaisProximo.alien) {
+const textoPrompt = '[ ESPAÇO ] encontrar ZibZab';
+if (marsPrompt.textContent !== textoPrompt) marsPrompt.textContent = textoPrompt;
+if (!marsPrompt.classList.contains('visible')) marsPrompt.classList.add('visible');
+} else {
+const textoPrompt = `[ ESPAÇO ] investigar ${alvoMaisProximo.nome}`;
+if (marsPrompt.textContent !== textoPrompt) marsPrompt.textContent = textoPrompt;
+if (!marsPrompt.classList.contains('visible')) marsPrompt.classList.add('visible');
+}
+}
+function interagirEmMarte() {
+if (!alvoMarteId) return;
+if (alvoMarteId === 'zibzab') {
+registrarSelo('zibzab');
+marsPrompt.classList.remove('visible');
+marsFeedback.textContent = '■ Foto registrada! "<zibzab-aaah…bleeee>"';
+renderizarTelaVitoria();
+setTimeout(() => showScreen('win'), 1100);
+return;
+}
+const ponto = pontosMarte.find((item) => item.id === alvoMarteId);
+if (!ponto) return;
+pontosInvestigados.add(ponto.id);
+const inventario = itensColetados
+.map((id) => todosItens.find((item) => item.id === id))
+.filter(Boolean)
+.map((item) => item.icon)
+.join(' ');
+marsFeedback.textContent = `Equipamentos da missão (${inventario}): ${ponto.descoberta}`;
+marsObjectives.textContent = pontosInvestigados.size === pontosMarte.length
+? 'Os três locais foram investigados. Algo apareceu no horizonte!'
+: `Pontos investigados: ${pontosInvestigados.size} de ${pontosMarte.length}`;
+alvoMarteId = null;
+renderizarPontosMarte();
+updateMarsTargetProximity();
+}
+function renderizarTelaVitoria() {
+winName.textContent = getNomeJogador();
+winItems.innerHTML = '';
+itensColetados.forEach((id) => {
+const item = todosItens.find((obj) => obj.id === id);
+if (!item) return;
+const linha = document.createElement('li');
+linha.textContent = `${item.icon} ${item.nome}`;
+winItems.appendChild(linha);
+});
+sealAlbum.innerHTML = '';
+selosDaExpedicao.forEach((selo) => {
+const conquistado = selosConquistados.includes(selo.id);
+const cartao = document.createElement('article');
+cartao.className = `seal-card${conquistado ? ' earned' : ''}`;
+const imagem = document.createElement('div');
+imagem.className = 'seal-photo';
+imagem.textContent = conquistado ? selo.imagem : '■';
+const titulo = document.createElement('h3');
+titulo.textContent = selo.titulo;
+const descricao = document.createElement('p');
+descricao.textContent = conquistado ? selo.descricao : 'Ainda não conquistado';
+cartao.append(imagem, titulo, descricao);
+sealAlbum.appendChild(cartao);
+});
+}
+function abrirQuiz(item) {
+if (itensColetados.includes(item.id)) return;
+teclasPressionadas.clear();
+itemEmFoco = item;
+quizTitle.textContent = `${item.icon} ${item.nome}`;
+quizQuestionText.textContent = item.q;
+quizOptions.replaceChildren();
+embaralhar(item.respostas).forEach((resposta) => {
+const label = document.createElement('label');
+label.className = 'quiz-option-label';
+const radio = document.createElement('input');
+radio.type = 'radio';
+radio.name = 'quiz-ans';
+radio.value = resposta.correta ? 'correta' : 'incorreta';
+const texto = document.createElement('span');
+texto.className = 'quiz-option-text';
+texto.textContent = resposta.texto;
+label.append(radio, texto);
+quizOptions.appendChild(label);
+});
+feedbackMsg.textContent = '';
+modalQuiz.classList.add('open');
+}
+function iniciarOverworld() {
+limparTimerNave();
+const idsUltimaMissao = JSON.parse(localStorage.getItem('itensMissaoAnterior') || '[]');
+const itensNovos = todosItens.filter((item) => !idsUltimaMissao.includes(item.id));
+const poolMissao = itensNovos.length >= totalRequisitados ? itensNovos : todosItens;
+itensMissao = embaralhar(poolMissao).slice(0, totalRequisitados);
+objectPositions = Object.fromEntries(itensMissao.map((item, indice) => [item.id, posicoesItensMissao[indice]]));
+localStorage.setItem('itensMissaoAnterior', JSON.stringify(itensMissao.map((item) => item.id)));
+itensColetados = [];
+selosConquistados = [];
+localStorage.removeItem('itensColetados');
+posPlayer = { x: 50, y: 50 };
+currentTargetId = null;
+itemEmFoco = null;
+bookOwnerName.textContent = getNomeJogador();
+listaLivro.innerHTML = itensMissao.map((item) => `
+<div style="border-bottom: 1px dashed var(--cor-marrom-cinza); padding-bottom: 8px;">
+<strong style="color: var(--cor-laranja);">${item.icon} ${item.nome}:</strong>
+<span style="font-size: 0.9rem; color: var(--cor-texto-claro);"> ${item.livro}</span>
+</div>
+`).join('');
+atualizarChecklist();
+renderMapObjects();
+renderPlayer();
+openLivro();
+}
+function confirmarResposta() {
+if (!itemEmFoco) return;
+const resposta = document.querySelector('input[name="quiz-ans"]:checked');
+if (!resposta) {
+feedbackMsg.textContent = 'Escolha uma alternativa antes de confirmar.';
+return;
+}
+if (resposta.value === 'correta') {
+itensColetados.push(itemEmFoco.id);
+localStorage.setItem('itensColetados', JSON.stringify(itensColetados));
+modalQuiz.classList.remove('open');
+currentTargetId = null;
+renderMapObjects();
+updateTargetProximity();
+atualizarChecklist();
+feedbackMsg.textContent = 'Resposta certa! Item coletado.';
+if (itensColetados.length >= totalRequisitados) {
+registrarSelo('laboratorio');
+setTimeout(iniciarNave, 500);
+}
+} else {
+feedbackMsg.textContent = 'Errou! Fechando o quiz e lendo o guia novamente...';
+setTimeout(() => {
+modalQuiz.classList.remove('open');
+openLivro();
+}, 1200);
+}
+}
+playerForm.addEventListener('submit', (event) => {
+event.preventDefault();
+const nome = inputNome.value.trim() || 'VIAJANTE';
+localStorage.setItem('nomeJogador', nome.toUpperCase());
+localStorage.setItem('skinJogador', skins[skinSelecionada].file);
+aplicarSkin(playerSprite);
+aplicarSkin(marsPlayerSprite);
+showScreen('game');
+iniciarOverworld();
+});
+btnAbrirLivro.addEventListener('click', openLivro);
+btnFecharLivro.addEventListener('click', closeLivro);
+btnConfirmar.addEventListener('click', confirmarResposta);
+btnAbortar.addEventListener('click', () => {
+itensColetados = [];
+localStorage.removeItem('itensColetados');
+showScreen('menu');
+});
+btnNovaMissao.addEventListener('click', () => {
+limparTimerNave();
+itensColetados = [];
+selosConquistados = [];
+localStorage.removeItem('itensColetados');
+inputNome.value = '';
+showScreen('menu');
+});
+btnRetryLaunch.addEventListener('click', iniciarNave);
+btnLandMars.addEventListener('click', iniciarExploracaoMarte);
+document.addEventListener('keydown', (event) => {
+if (screens.ship.classList.contains('active')) {
+if (sequenciaAtiva) processarTeclaIgnicao(event);
+return;
+}
+const overworldAtivo = screens.game.classList.contains('active');
+const marteAtivo = screens.mars.classList.contains('active');
+if (!overworldAtivo && !marteAtivo) return;
+const modalAberto = overworldAtivo && (modalLivro.classList.contains('open') || modalQuiz.classList.contains('open'));
+if (event.code === 'Space') {
+if (modalAberto || event.repeat) return;
+event.preventDefault();
+if (overworldAtivo) {
+const item = currentTargetId ? itensMissao.find((obj) => obj.id === currentTargetId) : null;
+if (item) abrirQuiz(item);
+} else {
+interagirEmMarte();
+}
+return;
+}
+const teclasDeMovimento = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'KeyA', 'KeyD', 'KeyW', 'KeyS'];
+if (!teclasDeMovimento.includes(event.code)) return;
+event.preventDefault();
+if (!modalAberto) teclasPressionadas.add(event.code);
+});
+document.addEventListener('keyup', (event) => {
+teclasPressionadas.delete(event.code);
+});
+window.addEventListener('blur', () => teclasPressionadas.clear());
+function atualizarMovimento() {
+const overworldAtivo = screens.game.classList.contains('active');
+const marteAtivo = screens.mars.classList.contains('active');
+const modalAberto = overworldAtivo && (modalLivro.classList.contains('open') || modalQuiz.classList.contains('open'));
+if ((overworldAtivo || marteAtivo) && !modalAberto) {
+const esquerda = teclasPressionadas.has('ArrowLeft') || teclasPressionadas.has('KeyA');
+const direita = teclasPressionadas.has('ArrowRight') || teclasPressionadas.has('KeyD');
+const cima = teclasPressionadas.has('ArrowUp') || teclasPressionadas.has('KeyW');
+const baixo = teclasPressionadas.has('ArrowDown') || teclasPressionadas.has('KeyS');
+const dx = Number(direita) - Number(esquerda);
+const dy = Number(baixo) - Number(cima);
+if (dx !== 0 || dy !== 0) {
+const distancia = Math.hypot(dx, dy);
+posPlayer.x = Math.min(96, Math.max(4, posPlayer.x + (dx / distancia) * VELOCIDADE));
+posPlayer.y = Math.min(92, Math.max(8, posPlayer.y + (dy / distancia) * VELOCIDADE));
+if (overworldAtivo) renderPlayer();
+else renderPlayerMarte();
+}
+}
+requestAnimationFrame(atualizarMovimento);
+}
+requestAnimationFrame(atualizarMovimento);
+if (window.location.hash === '#win') {
+showScreen('win');
+} else if (window.location.hash === '#game') {
+showScreen('game');
+iniciarOverworld();
+} else {
+showScreen('menu');
+}
+</script>
 </body>
 </html>
