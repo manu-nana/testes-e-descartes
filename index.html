@@ -54,6 +54,7 @@
 <div class="hourglass-bottom"></div>
 </div>
 </div>
+<button type="button" id="btn-abrir-creditos" class="menu-link credits-button">- créditos -</button>
 </div>
 </section>
 <section id="screen-game" class="screen">
@@ -187,6 +188,33 @@ Este livro pertence a: <strong id="book-owner-name" style="color: var(--cor-text
 </div>
 </section>
 </main>
+<div class="modal-overlay" id="modal-creditos" role="dialog" aria-modal="true" aria-labelledby="creditos-titulo" aria-hidden="true">
+<div class="modal-box credits-box">
+<h2 id="creditos-titulo">Créditos</h2>
+<div class="credits-content">
+<section>
+<h3>Projeto</h3>
+<p><strong>Bowye Mars 3000</strong></p>
+</section>
+<section>
+<h3>Equipe</h3>
+<p>BEATRIZ FREIBERGER PIRANI<br>EMANUELLI BUENO VILLELA</p>
+</section>
+<section>
+<h3>Tecnologia</h3>
+<p>HTML, CSS e JavaScript.</p>
+</section>
+<section>
+<h3>Repositório</h3>
+<p>manu-nana/testes-e-descartes</p>
+</section>
+</div>
+<button type="button" id="btn-fechar-creditos" class="menu-link" style="margin-top: 20px; width: 100%;">
+[ fechar créditos ]
+</button>
+</div>
+</div>
+<div id="explosion-effect" class="explosion-effect" aria-hidden="true"></div>
 <script>
 const todosItens = [
 {
@@ -479,6 +507,10 @@ const skinCounter = document.getElementById('skin-counter');
 const skinDots = document.getElementById('skin-dots');
 const skinPrev = document.getElementById('skin-prev');
 const skinNext = document.getElementById('skin-next');
+const modalCreditos = document.getElementById('modal-creditos');
+const btnAbrirCreditos = document.getElementById('btn-abrir-creditos');
+const btnFecharCreditos = document.getElementById('btn-fechar-creditos');
+const explosionEffect = document.getElementById('explosion-effect');
 // Os nomes exibidos são apelidos visuais; os nomes dos arquivos ficam ocultos.
 const skins = [
 { file: './acabate.png', label: '' },
@@ -653,6 +685,27 @@ const aleatorio = Math.floor(Math.random() * (indice + 1));
 }
 return resultado;
 }
+function criarExplosao() {
+explosionEffect.innerHTML = '';
+explosionEffect.classList.remove('active');
+void explosionEffect.offsetWidth;
+for (let indice = 0; indice < 42; indice++) {
+const particula = document.createElement('span');
+const angulo = (Math.PI * 2 * indice) / 42 + Math.random() * 0.12;
+const distancia = 120 + Math.random() * 260;
+particula.style.setProperty('--x', `${Math.cos(angulo) * distancia}px`);
+particula.style.setProperty('--y', `${Math.sin(angulo) * distancia}px`);
+particula.style.setProperty('--delay', `${Math.random() * 0.12}s`);
+particula.style.setProperty('--size', `${5 + Math.random() * 12}px`);
+particula.style.setProperty('--rotation', `${Math.round(Math.random() * 180)}deg`);
+explosionEffect.appendChild(particula);
+}
+explosionEffect.classList.add('active');
+setTimeout(() => {
+explosionEffect.classList.remove('active');
+explosionEffect.innerHTML = '';
+}, 1400);
+}
 function limparTimerNave() {
 if (timerNave) clearInterval(timerNave);
 timerNave = null;
@@ -797,12 +850,14 @@ if (resultado === 'falha-total') {
 shipResultIcon.textContent = '■';
 shipResultTitle.textContent = 'Falha total';
 shipResultMessage.textContent = 'A nave explodiu ainda na Terra. Os cabos foram conectados incorretamente ou o tempo acabou.';
+criarExplosao();
 return;
 }
 if (resultado === 'meia-boca') {
 shipResultIcon.textContent = '■■';
 shipResultTitle.textContent = 'Decolagem meia-boca';
 shipResultMessage.textContent = 'A nave ficou sem força e o astronauta acabou conhecendo Jesus no espaço. Tente outra sequência.';
+criarExplosao();
 return;
 }
 registrarSelo('decolagem');
@@ -1030,10 +1085,11 @@ registrarSelo('laboratorio');
 setTimeout(iniciarNave, 500);
 }
 } else {
-feedbackMsg.textContent = 'Errou! Fechando o quiz e lendo o guia novamente...';
+feedbackMsg.textContent = 'Errou! Todos os itens serão zerados e a missão reiniciará.';
+criarExplosao();
 setTimeout(() => {
 modalQuiz.classList.remove('open');
-openLivro();
+iniciarOverworld();
 }, 1200);
 }
 }
@@ -1065,11 +1121,30 @@ showScreen('menu');
 });
 btnRetryLaunch.addEventListener('click', iniciarNave);
 btnLandMars.addEventListener('click', iniciarExploracaoMarte);
+btnAbrirCreditos.addEventListener('click', () => {
+modalCreditos.classList.add('open');
+modalCreditos.setAttribute('aria-hidden', 'false');
+});
+btnFecharCreditos.addEventListener('click', () => {
+modalCreditos.classList.remove('open');
+modalCreditos.setAttribute('aria-hidden', 'true');
+});
+modalCreditos.addEventListener('click', (event) => {
+if (event.target === modalCreditos) {
+modalCreditos.classList.remove('open');
+modalCreditos.setAttribute('aria-hidden', 'true');
+}
+});
 btnFecharFotoMarte.addEventListener('click', fecharFotoMarte);
 modalFotoMarte.addEventListener('click', (event) => {
 if (event.target === modalFotoMarte) fecharFotoMarte();
 });
 document.addEventListener('keydown', (event) => {
+if (event.code === 'Escape' && modalCreditos.classList.contains('open')) {
+modalCreditos.classList.remove('open');
+modalCreditos.setAttribute('aria-hidden', 'true');
+return;
+}
 if (screens.ship.classList.contains('active')) {
 if (sequenciaAtiva) processarTeclaIgnicao(event);
 return;
