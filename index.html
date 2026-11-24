@@ -160,6 +160,14 @@ Este livro pertence a: <strong id="book-owner-name" style="color: var(--cor-text
 </div>
 <div class="mars-feedback" id="mars-feedback" role="status" aria-live="polite">Uma nova paisagem se estende diante de você.</div>
 <div class="interact-prompt mars-prompt" id="mars-prompt" role="status" aria-live="polite"></div>
+<div class="modal-overlay mars-photo-overlay" id="modal-mars-photo" role="dialog" aria-modal="true" aria-labelledby="mars-photo-title" aria-hidden="true">
+<div class="mars-photo-box">
+<button type="button" class="menu-link mars-photo-close" id="btn-fechar-foto-marte" aria-label="Fechar imagem">×</button>
+<h2 id="mars-photo-title"></h2>
+<img id="mars-photo-image" class="mars-photo-image" alt="">
+<p id="mars-photo-description" class="mars-photo-description"></p>
+</div>
+</div>
 </section>
 <section id="screen-win" class="screen">
 <div class="menu-container win-container">
@@ -461,6 +469,11 @@ const marsPrompt = document.getElementById('mars-prompt');
 const marsFeedback = document.getElementById('mars-feedback');
 const marsObjectives = document.getElementById('mars-objectives');
 const marsInventory = document.getElementById('mars-inventory');
+const modalFotoMarte = document.getElementById('modal-mars-photo');
+const fotoMarteTitulo = document.getElementById('mars-photo-title');
+const fotoMarteImagem = document.getElementById('mars-photo-image');
+const fotoMarteDescricao = document.getElementById('mars-photo-description');
+const btnFecharFotoMarte = document.getElementById('btn-fechar-foto-marte');
 const skinPreview = document.getElementById('skin-preview');
 const skinDisplayName = document.getElementById('skin-display-name');
 const skinCounter = document.getElementById('skin-counter');
@@ -500,9 +513,9 @@ const selosDaExpedicao = [
 { id: 'zibzab', titulo: 'Encontro com ZibZab', imagem: './foto astronauta com alien.jpg', descricao: 'Primeiro contato registrado em Marte.' }
 ];
 const pontosMarte = [
-{ id: 'cratera', nome: 'Cratera de gelo antigo', icon: '■', x: 24, y: 32, descoberta: 'Gelo preservado por eras revela que Marte já teve água líquida.' },
-{ id: 'rocha', nome: 'Rocha de ferro brilhante', icon: '■', x: 70, y: 48, descoberta: 'O brilho metálico confirma a presença de minerais ricos em ferro.' },
-{ id: 'pegada', nome: 'Pegada estranha', icon: '■', x: 42, y: 76, descoberta: 'A marca não pertence ao traje nem ao Rover. Alguém esteve aqui.' }
+{ id: 'cratera', nome: 'Cratera de gelo antigo', imagem: './cratera de gelo.jpg', icon: '■', x: 24, y: 32, descoberta: 'Gelo preservado por eras revela que Marte já teve água líquida.' },
+{ id: 'rocha', nome: 'Rocha de ferro brilhante', imagem: './Rocha de ferro brilhante.jpg', icon: '■', x: 70, y: 48, descoberta: 'O brilho metálico confirma a presença de minerais ricos em ferro.' },
+{ id: 'pegada', nome: 'Pegada estranha', imagem: './Pegada estranha.jpg', icon: '■', x: 42, y: 76, descoberta: 'A marca não pertence ao traje nem ao Rover. Alguém esteve aqui.' }
 ];
 let selosConquistados = [];
 let caboSelecionado = null;
@@ -891,6 +904,13 @@ return;
 }
 const ponto = pontosMarte.find((item) => item.id === alvoMarteId);
 if (!ponto) return;
+fotoMarteTitulo.textContent = ponto.nome;
+fotoMarteImagem.src = ponto.imagem;
+fotoMarteImagem.alt = ponto.nome;
+fotoMarteDescricao.textContent = ponto.descoberta;
+modalFotoMarte.setAttribute('aria-hidden', 'false');
+modalFotoMarte.classList.add('open');
+btnFecharFotoMarte.focus();
 pontosInvestigados.add(ponto.id);
 const inventario = itensColetados
 .map((id) => todosItens.find((item) => item.id === id))
@@ -904,6 +924,10 @@ marsObjectives.textContent = pontosInvestigados.size === pontosMarte.length
 alvoMarteId = null;
 renderizarPontosMarte();
 updateMarsTargetProximity();
+}
+function fecharFotoMarte() {
+modalFotoMarte.classList.remove('open');
+modalFotoMarte.setAttribute('aria-hidden', 'true');
 }
 function renderizarTelaVitoria() {
 winName.textContent = getNomeJogador();
@@ -1041,6 +1065,10 @@ showScreen('menu');
 });
 btnRetryLaunch.addEventListener('click', iniciarNave);
 btnLandMars.addEventListener('click', iniciarExploracaoMarte);
+btnFecharFotoMarte.addEventListener('click', fecharFotoMarte);
+modalFotoMarte.addEventListener('click', (event) => {
+if (event.target === modalFotoMarte) fecharFotoMarte();
+});
 document.addEventListener('keydown', (event) => {
 if (screens.ship.classList.contains('active')) {
 if (sequenciaAtiva) processarTeclaIgnicao(event);
@@ -1049,7 +1077,12 @@ return;
 const overworldAtivo = screens.game.classList.contains('active');
 const marteAtivo = screens.mars.classList.contains('active');
 if (!overworldAtivo && !marteAtivo) return;
-const modalAberto = overworldAtivo && (modalLivro.classList.contains('open') || modalQuiz.classList.contains('open'));
+const modalAberto = (overworldAtivo && (modalLivro.classList.contains('open') || modalQuiz.classList.contains('open')))
+|| (marteAtivo && modalFotoMarte.classList.contains('open'));
+if (event.code === 'Escape' && marteAtivo && modalFotoMarte.classList.contains('open')) {
+fecharFotoMarte();
+return;
+}
 if (event.code === 'Space') {
 if (modalAberto || event.repeat) return;
 event.preventDefault();
@@ -1073,7 +1106,8 @@ window.addEventListener('blur', () => teclasPressionadas.clear());
 function atualizarMovimento() {
 const overworldAtivo = screens.game.classList.contains('active');
 const marteAtivo = screens.mars.classList.contains('active');
-const modalAberto = overworldAtivo && (modalLivro.classList.contains('open') || modalQuiz.classList.contains('open'));
+const modalAberto = (overworldAtivo && (modalLivro.classList.contains('open') || modalQuiz.classList.contains('open')))
+|| (marteAtivo && modalFotoMarte.classList.contains('open'));
 if ((overworldAtivo || marteAtivo) && !modalAberto) {
 const esquerda = teclasPressionadas.has('ArrowLeft') || teclasPressionadas.has('KeyA');
 const direita = teclasPressionadas.has('ArrowRight') || teclasPressionadas.has('KeyD');
