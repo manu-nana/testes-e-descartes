@@ -534,12 +534,14 @@ scale: 1.2;
 filter: drop-shadow(0 0 15px rgba(255,190,130,0.95));
 }
 .zibzab-marker {
+width: 44px;
+height: 44px;
 filter: drop-shadow(0 0 14px rgba(120,255,190,0.9));
 }
 .zibzib-image {
 display: block;
-width: 44px;
-height: 44px;
+width: 36px;
+height: 36px;
 object-fit: contain;
 }
 .mars-feedback {

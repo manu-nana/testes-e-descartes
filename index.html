@@ -516,6 +516,7 @@ const pontosMarte = [
 { id: 'rocha', nome: 'Rocha de ferro brilhante', imagem: './Rocha de ferro brilhante.jpg', icon: '■', x: 70, y: 48, descoberta: 'O brilho metálico confirma a presença de minerais ricos em ferro.' },
 { id: 'pegada', nome: 'Pegada estranha', imagem: './Pegada estranha.jpg', icon: '■', x: 42, y: 76, descoberta: 'A marca não pertence ao traje nem ao Rover. Alguém esteve aqui.' }
 ];
+const pontoZibzab = { id: 'zibzab', nome: 'ZibZab', icon: '■', x: 55, y: 52, alien: true };
 let selosConquistados = [];
 let caboSelecionado = null;
 let cabosConectados = new Set();
@@ -835,7 +836,7 @@ marsWorld.querySelectorAll('.mars-object').forEach((objeto) => objeto.remove());
 const alienLiberado = pontosInvestigados.size === pontosMarte.length;
 const pontosVisiveis = pontosMarte.filter((ponto) => !pontosInvestigados.has(ponto.id));
 if (alienLiberado) {
-pontosVisiveis.push({ id: 'zibzab', nome: 'ZibZab', icon: '■', x: 76, y: 32, alien: true });
+pontosVisiveis.push(pontoZibzab);
 }
 pontosVisiveis.forEach((ponto) => {
 const marcador = document.createElement('div');
@@ -860,7 +861,7 @@ marsWorld.appendChild(marcador);
 function updateMarsTargetProximity() {
 const marcadores = [...pontosMarte.filter((ponto) => !pontosInvestigados.has(ponto.id))];
 if (pontosInvestigados.size === pontosMarte.length) {
-marcadores.push({ id: 'zibzab', nome: 'ZibZab', x: 76, y: 32, alien: true });
+marcadores.push(pontoZibzab);
 }
 let alvoMaisProximo = null;
 let menorDistancia = Infinity;
