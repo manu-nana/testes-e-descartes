@@ -538,10 +538,9 @@ filter: drop-shadow(0 0 14px rgba(120,255,190,0.9));
 }
 .zibzib-image {
 display: block;
-width: 100%;
-height: 100%;
+width: 44px;
+height: 44px;
 object-fit: contain;
-transform: scale(1.6);
 }
 .mars-feedback {
 position: absolute;
