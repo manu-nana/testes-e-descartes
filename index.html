@@ -495,9 +495,9 @@ const teclasIgnicao = [
 { code: 'Space', label: 'ESPAÇO' }
 ];
 const selosDaExpedicao = [
-{ id: 'laboratorio', titulo: 'Laboratório', imagem: '■', descricao: 'Suprimentos reunidos no Overworld.' },
-{ id: 'decolagem', titulo: 'Decolagem Perfeita', imagem: '■', descricao: 'Sistemas conectados e ignição concluída.' },
-{ id: 'zibzab', titulo: 'Encontro com ZibZab', imagem: '■', descricao: 'Primeiro contato registrado em Marte.' }
+{ id: 'laboratorio', titulo: 'Laboratório', imagem: './real lab.gif', descricao: 'Suprimentos reunidos no Overworld.' },
+{ id: 'decolagem', titulo: 'Decolagem Perfeita', imagem: './foguete decolando.jpg', descricao: 'Sistemas conectados e ignição concluída.' },
+{ id: 'zibzab', titulo: 'Encontro com ZibZab', imagem: './foto astronauta com alien.jpg', descricao: 'Primeiro contato registrado em Marte.' }
 ];
 const pontosMarte = [
 { id: 'cratera', nome: 'Cratera de gelo antigo', icon: '■', x: 24, y: 32, descoberta: 'Gelo preservado por eras revela que Marte já teve água líquida.' },
@@ -829,7 +829,15 @@ pontosVisiveis.forEach((ponto) => {
 const marcador = document.createElement('div');
 marcador.className = `mars-object${ponto.alien ? ' zibzab-marker' : ''}`;
 marcador.dataset.poiId = ponto.id;
+if (ponto.alien) {
+const imagem = document.createElement('img');
+imagem.className = 'zibzab-image';
+imagem.src = './zibzib.png';
+imagem.alt = 'ZibZib, o alien de Marte';
+marcador.appendChild(imagem);
+} else {
 marcador.textContent = ponto.icon;
+}
 marcador.title = ponto.nome;
 marcador.style.left = `${ponto.x}%`;
 marcador.style.top = `${ponto.y}%`;
@@ -912,9 +920,14 @@ selosDaExpedicao.forEach((selo) => {
 const conquistado = selosConquistados.includes(selo.id);
 const cartao = document.createElement('article');
 cartao.className = `seal-card${conquistado ? ' earned' : ''}`;
-const imagem = document.createElement('div');
+const imagem = document.createElement(conquistado ? 'img' : 'div');
 imagem.className = 'seal-photo';
-imagem.textContent = conquistado ? selo.imagem : '■';
+if (conquistado) {
+imagem.src = selo.imagem;
+imagem.alt = selo.titulo;
+} else {
+imagem.textContent = '■';
+}
 const titulo = document.createElement('h3');
 titulo.textContent = selo.titulo;
 const descricao = document.createElement('p');
