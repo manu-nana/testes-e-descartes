@@ -836,7 +836,7 @@ marsWorld.querySelectorAll('.mars-object').forEach((objeto) => objeto.remove());
 const alienLiberado = pontosInvestigados.size === pontosMarte.length;
 const pontosVisiveis = pontosMarte.filter((ponto) => !pontosInvestigados.has(ponto.id));
 if (alienLiberado) {
-pontosVisiveis.push({ id: 'zibzab', nome: 'ZibZab', icon: '■', x: 84, y: 24, alien: true });
+pontosVisiveis.push({ id: 'zibzab', nome: 'ZibZab', icon: '■', x: 76, y: 32, alien: true });
 }
 pontosVisiveis.forEach((ponto) => {
 const marcador = document.createElement('div');
@@ -861,7 +861,7 @@ marsWorld.appendChild(marcador);
 function updateMarsTargetProximity() {
 const marcadores = [...pontosMarte.filter((ponto) => !pontosInvestigados.has(ponto.id))];
 if (pontosInvestigados.size === pontosMarte.length) {
-marcadores.push({ id: 'zibzab', nome: 'ZibZab', x: 84, y: 24, alien: true });
+marcadores.push({ id: 'zibzab', nome: 'ZibZab', x: 76, y: 32, alien: true });
 }
 let alvoMaisProximo = null;
 let menorDistancia = Infinity;
